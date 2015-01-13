@@ -1,5 +1,4 @@
 var vumigo = require('vumigo_v02');
-// var fixtures = require('./fixtures');
 var AppTester = vumigo.AppTester;
 var LocationState = require('go-jsbox-location');
 var assert = require('assert');

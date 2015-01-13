@@ -13,7 +13,6 @@ go.app = function() {
     var ChoiceState = vumigo.states.ChoiceState;
     var EndState = vumigo.states.EndState;
     var JsonApi = vumigo.http.api.JsonApi;
-    // var FreeText = vumigo.states.FreeText;
 
 
     var GoApp = App.extend(function(self) {
