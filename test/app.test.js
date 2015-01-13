@@ -81,7 +81,7 @@ describe("app", function() {
                 .setup.config.app({
                     name: 'test_app',
                     welcome_enabled: false,
-                    mmc_number: '555'
+                    sms_number: '555'
                 })
                 .setup(function(api) {
                     locations.fixtures.forEach(api.http.fixtures.add);

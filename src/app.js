@@ -55,7 +55,7 @@ go.app = function() {
                       "service. To get FREE info on how to look after your " +
                       "circumcision wound please SMS 'MMC' to {{SMS_number}}."
                     ).context({
-                        SMS_number: self.im.config.mmc_number
+                        SMS_number: self.im.config.sms_number
                     }),
                 next: 'states_start'
             });
