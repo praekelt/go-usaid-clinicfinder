@@ -1,6 +1,8 @@
 var vumigo = require('vumigo_v02');
-var fixtures = require('./fixtures');
+// var fixtures = require('./fixtures');
 var AppTester = vumigo.AppTester;
+var LocationState = require('go-jsbox-location');
+var assert = require('assert');
 
 
 describe("app", function() {
@@ -10,35 +12,173 @@ describe("app", function() {
 
         beforeEach(function() {
             app = new go.app.GoApp();
-
             tester = new AppTester(app);
+            locations = LocationState.testing();
+
+            locations.add_location({
+                request:"Friend Street",
+                response_data: {
+                    results:
+                    [{
+                        formatted_address:"Friend Street, Suburb",
+                        geometry: {
+                            location:{
+                                lng: '3.1415926535',
+                                lat: '2.7182818284'
+                            }
+                        }
+                    }],
+                    status:"OK"
+                }
+            });
+
+            locations.add_location({
+                request:"Quad Street",
+                response_data: {
+                    results:
+                    [
+                        {
+                            formatted_address:"Quad St 1, Sub 1",
+                            geometry: {
+                                location:{
+                                    lng: '1.1',
+                                    lat: '1.11'
+                                }
+                            }
+                        },
+                        {
+                            formatted_address:"Quad St 2, Sub 2",
+                            geometry: {
+                                location:{
+                                    lng: '2.2',
+                                    lat: '2.22'
+                                }
+                            }
+                        },
+                        {
+                            formatted_address:"Quad St 3, Sub 3",
+                            geometry: {
+                                location:{
+                                    lng: '3.3',
+                                    lat: '3.33'
+                                }
+                            }
+                        },
+                        {
+                            formatted_address:"Quad St 4, Sub 4",
+                            geometry: {
+                                location:{
+                                    lng: '4.4',
+                                    lat: '4.44'
+                                }
+                            }
+                        }
+                    ],
+                    status:"OK"
+                }
+            });
 
             tester
                 .setup.config.app({
-                    name: 'test_app'
+                    name: 'test_app',
+                    welcome_enabled: false,
+                    mmc_number: '555'
                 })
                 .setup(function(api) {
-                    fixtures().forEach(api.http.fixtures.add);
+                    locations.fixtures.forEach(api.http.fixtures.add);
                 });
         });
 
         describe("when the user starts a session", function() {
-            it("should ask for type of clinic", function() {
-                return tester
-                    .inputs(
-                        {session_event: "new"}
-                    )
-                    .check.interaction({
-                        state: 'state_clinic_type',
-                        reply: [
-                            "Welcome to Clinic Finder. What type of clinic " +
-                            "are you looking for?",
-                            "1. Nearest Clinic",
-                            "2. MMC Clinic",
-                            "3. HCT Clinic"
-                        ].join('\n')
-                    })
-                    .run();
+            describe("when a welcome screen is not enabled", function() {
+                it("should ask for type of clinic", function() {
+                    return tester
+                        .inputs(
+                            {session_event: "new"}
+                        )
+                        .check.interaction({
+                            state: 'state_clinic_type',
+                            reply: [
+                                "Welcome to Clinic Finder. What type of " +
+                                "clinic are you looking for?",
+                                "1. Nearest Clinic",
+                                "2. MMC Clinic",
+                                "3. HCT Clinic"
+                            ].join('\n')
+                        })
+                        .run();
+                });
+            });
+
+            describe("when a welcome screen is enabled", function() {
+                it("should welcome them", function() {
+                    return tester
+                        .setup.config.app({
+                            welcome_enabled: true
+                        })
+                        .inputs(
+                            {session_event: "new"}
+                        )
+                        .check.interaction({
+                            state: 'state_welcome',
+                            reply: [
+                                "Welcome to Brothers for Life!",
+                                "1. Find ur closest MMC clinic",
+                                "2. Sign up for MMC post-op SMSs to help " +
+                                "you heal",
+                            ].join('\n')
+                        })
+                        .run();
+                });
+            });
+        });
+
+        describe("when the user responds to the welcome screen", function() {
+            describe("if they choose to locate a clinic", function() {
+                it("should ask for type of clinic", function() {
+                    return tester
+                        .setup.config.app({
+                            welcome_enabled: true
+                        })
+                        .inputs(
+                            {session_event: "new"},
+                            '1'  // state_welcome
+                        )
+                        .check.interaction({
+                            state: 'state_clinic_type',
+                            reply: [
+                                "Welcome to Clinic Finder. What type of " +
+                                "clinic are you looking for?",
+                                "1. Nearest Clinic",
+                                "2. MMC Clinic",
+                                "3. HCT Clinic"
+                            ].join('\n')
+                        })
+                        .run();
+                });
+            });
+
+            describe("if they choose to sign up for messages", function() {
+                it("should provide info on how to subscribe", function() {
+                    return tester
+                        .setup.config.app({
+                            welcome_enabled: true
+                        })
+                        .inputs(
+                            {session_event: "new"},
+                            '2'  // state_welcome
+                        )
+                        .check.interaction({
+                            state: 'state_how_to_register',
+                            reply:
+                                "Welcome to the Medical Male Circumcision " +
+                                "(MMC) info service. To get FREE info on how " +
+                                "to look after your circumcision wound " +
+                                "please SMS 'MMC' to 555.",
+                        })
+                        .check.reply.ends_session()
+                        .run();
+                });
             });
         });
 
@@ -86,7 +226,7 @@ describe("app", function() {
                 });
 
                 describe("if the user chooses 1. Continue", function() {
-                    it("should display clinic names", function() {
+                    it("should ask about health services opt-in", function() {
                         return tester
                             .inputs(
                                 {session_event: "new"},
@@ -95,9 +235,16 @@ describe("app", function() {
                                 '1'  // state_locate_permission
                             )
                             .check.interaction({
-                                state: 'state_clinic_names',
-                                reply:
-                                    "Clinic 1, Clinic 2"
+                                state: 'state_health_services',
+                                reply: [
+                                    "You will get an SMS with the clinic " +
+                                    "info shortly. Want to hear about the " +
+                                    "latest health services & info? T&Cs " +
+                                    "www.zazi.org.za",
+                                    "1. For female",
+                                    "2. For males",
+                                    "3. No"
+                                ].join("\n")
                             })
                             .run();
                     });
@@ -130,7 +277,7 @@ describe("app", function() {
                 describe("if the user replies after initially refusing consent", function() {
 
                     describe("if they choose 1. Give consent", function() {
-                        it("should show 2 clinic names", function() {
+                        it("should ask about health services opt-in", function() {
                             return tester
                             .inputs(
                                 {session_event: "new"},
@@ -140,9 +287,16 @@ describe("app", function() {
                                 '1'  // state_reprompt_permission
                             )
                             .check.interaction({
-                                state: 'state_clinic_names',
-                                reply:
-                                    "Clinic 1, Clinic 2"
+                                state: 'state_health_services',
+                                reply: [
+                                    "You will get an SMS with the clinic " +
+                                    "info shortly. Want to hear about the " +
+                                    "latest health services & info? T&Cs " +
+                                    "www.zazi.org.za",
+                                    "1. For female",
+                                    "2. For males",
+                                    "3. No"
+                                ].join("\n")
                             })
                             .run();
                         });
@@ -214,21 +368,102 @@ describe("app", function() {
                 });
 
                 describe("after entering their suburb", function() {
-                    it("should display two closest clinics", function() {
-                        return tester
-                            .inputs(
-                                {session_event: "new"},
-                                '1',  // state_clinic_type
-                                '2',  // state_sim_type
-                                'Observatory'  // state_suburb
-                            )
-                            .check.interaction({
-                                state: 'state_clinic_names',
-                                reply:
-                                    "Clinic 1, Clinic 2"
-                            })
-                            .check.reply.ends_session()
-                            .run();
+                    describe("if there is only one location option", function() {
+                        it("should ask about health services opt-in", function() {
+                            return tester
+                                .inputs(
+                                    {session_event: "new"},
+                                    '1',  // state_clinic_type
+                                    '2',  // state_sim_type
+                                    'Friend Street'  // state_suburb
+                                )
+                                .check.interaction({
+                                    state: 'state_health_services',
+                                    reply: [
+                                        "You will get an SMS with the clinic " +
+                                        "info shortly. Want to hear about the " +
+                                        "latest health services & info? T&Cs " +
+                                        "www.zazi.org.za",
+                                        "1. For female",
+                                        "2. For males",
+                                        "3. No"
+                                    ].join("\n")
+                                })
+                                .run();
+                        });
+
+                        it("should save location data to contact", function() {
+                            return tester
+                                .inputs(
+                                    {session_event: "new"},
+                                    '1',  // state_clinic_type
+                                    '2',  // state_sim_type
+                                    'Friend Street'  // state_suburb
+                                )
+                                .check(function(api) {
+                                    var contact = api.contacts.store[0];
+                                    assert.equal(contact.extra[
+                                        'location:formatted_address'],
+                                        'Friend Street, Suburb');
+                                    assert.equal(contact.extra[
+                                        'location:geometry:location:lng'],
+                                        '3.1415926535');
+                                    assert.equal(contact.extra[
+                                        'location:geometry:location:lat'],
+                                        '2.7182818284');
+                                })
+                                .run();
+                        });
+
+                    describe("if there are multiple location options", function() {
+                        it("should display a list of address options", function() {
+                            return tester
+                                .inputs(
+                                    {session_event: "new"},
+                                    '1',  // state_clinic_type
+                                    '2',  // state_sim_type
+                                    'Quad Street'  // state_suburb
+                                )
+                                .check.interaction({
+                                    state: 'state_suburb',
+                                    reply: [
+                                        "Please select your location:",
+                                        "1. Quad St 1, Sub 1",
+                                        "2. Quad St 2, Sub 2",
+                                        "3. Quad St 3, Sub 3",
+                                        "4. Quad St 4, Sub 4",
+                                        "n. Next",
+                                        "p. Previous"
+                                    ].join('\n')
+                                })
+                                .run();
+                        });
+
+                        it("should save data to contact upon choice", function() {
+                            return tester
+                                .inputs(
+                                    {session_event: "new"},
+                                    '1',  // state_clinic_type
+                                    '2',  // state_sim_type
+                                    'Quad Street',  // state_suburb
+                                    '3'  // state_suburb
+                                )
+                                .check(function(api) {
+                                    var contact = api.contacts.store[0];
+                                    assert.equal(contact.extra[
+                                        'location:formatted_address'],
+                                        'Quad St 3, Sub 3');
+                                    assert.equal(contact.extra[
+                                        'location:geometry:location:lng'],
+                                        '3.3');
+                                    assert.equal(contact.extra[
+                                        'location:geometry:location:lat'],
+                                        '3.33');
+                                })
+                                .run();
+                        });
+                    });
+
                     });
                 });
             });
@@ -255,35 +490,32 @@ describe("app", function() {
             });
         });
 
-        // describe("when the user asks to see the menu again", function() {
-        //     it("should show the menu again", function() {
-        //         return tester
-        //             .setup.user.state('states:start')
-        //             .input('1')
-        //             .check.interaction({
-        //                 state: 'states:start',
-        //                 reply: [
-        //                     'Hi there! What do you want to do?',
-        //                     '1. Show this menu again',
-        //                     '2. Exit'
-        //                 ].join('\n')
-        //             })
-        //             .run();
-        //     });
-        // });
+        describe("when the user responds to health service option", function() {
+            it("should store option as extra, thank them and exit", function() {
+                return tester
+                    .inputs(
+                        {session_event: "new"},
+                        '1',  // state_clinic_type
+                        '2',  // state_sim_type
+                        'Friend Street',  // state_suburb
+                        '2'  // state_health_services
+                    )
+                    .check.interaction({
+                        state: 'state_thanks',
+                        reply:
+                            "Thanks for using the Clinic Finder " +
+                            "Service. Opt out at any stage by " +
+                            "SMSing 'STOP' in reply to your " +
+                            "clinic info message."
+                    })
+                    .check(function(api) {
+                        var contact = api.contacts.store[0];
+                        assert.equal(contact.extra.health_services, 'male');
+                    })
+                    .check.reply.ends_session()
+                    .run();
+            });
+        });
 
-        // describe("when the user asks to exit", function() {
-        //     it("should say thank you and end the session", function() {
-        //         return tester
-        //             .setup.user.state('states:start')
-        //             .input('2')
-        //             .check.interaction({
-        //                 state: 'states:end',
-        //                 reply: 'Thanks, cheers!'
-        //             })
-        //             .check.reply.ends_session()
-        //             .run();
-        //     });
-        // });
     });
 });
