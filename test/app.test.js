@@ -17,16 +17,14 @@ describe("app", function() {
             locations.add_location({
                 request:"Friend Street",
                 response_data: {
-                    results:
-                    [{
-                        formatted_address:"Friend Street, Suburb",
-                        geometry: {
-                            location:{
-                                lng: '3.1415926535',
-                                lat: '2.7182818284'
+                    results: [
+                        {
+                            formatted_address:"Friend Street, Suburb",
+                            geometry: {
+                                location: {lng: '3.1415', lat: '2.7182'}
                             }
                         }
-                    }],
+                    ],
                     status:"OK"
                 }
             });
@@ -34,42 +32,26 @@ describe("app", function() {
             locations.add_location({
                 request:"Quad Street",
                 response_data: {
-                    results:
-                    [
+                    results: [
                         {
                             formatted_address:"Quad St 1, Sub 1",
                             geometry: {
-                                location:{
-                                    lng: '1.1',
-                                    lat: '1.11'
-                                }
+                                location: { lng: '1.1', lat: '1.11' }
                             }
-                        },
-                        {
+                        },{
                             formatted_address:"Quad St 2, Sub 2",
                             geometry: {
-                                location:{
-                                    lng: '2.2',
-                                    lat: '2.22'
-                                }
+                                location: { lng: '2.2', lat: '2.22' }
                             }
-                        },
-                        {
+                        },{
                             formatted_address:"Quad St 3, Sub 3",
                             geometry: {
-                                location:{
-                                    lng: '3.3',
-                                    lat: '3.33'
-                                }
+                                location: { lng: '3.3', lat: '3.33' }
                             }
-                        },
-                        {
+                        },{
                             formatted_address:"Quad St 4, Sub 4",
                             geometry: {
-                                location:{
-                                    lng: '4.4',
-                                    lat: '4.44'
-                                }
+                                location: { lng: '4.4', lat: '4.44' }
                             }
                         }
                     ],
@@ -388,10 +370,10 @@ describe("app", function() {
                                         'Friend Street, Suburb');
                                     assert.equal(contact.extra[
                                         'location:geometry:location:lng'],
-                                        '3.1415926535');
+                                        '3.1415');
                                     assert.equal(contact.extra[
                                         'location:geometry:location:lat'],
-                                        '2.7182818284');
+                                        '2.7182');
                                 })
                                 .run();
                         });
