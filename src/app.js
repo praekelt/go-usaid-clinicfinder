@@ -73,27 +73,12 @@ go.app = function() {
                     new Choice('hct', $("HCT Clinic"))
                 ],
 
-                next: 'state_sim_type'
-            });
-        });
-
-        self.states.add('state_sim_type', function(name) {
-            return new ChoiceState(name, {
-                question:
-                    $("To find ur closest clinic we need to know " +
-                      "what SIM you have in ur phone:"),
-
-                choices: [
-                    new Choice('vodacom_mtn', $("Vodacom or MTN")),
-                    new Choice('other', $("Other")),
-                    new Choice('quit', $("Quit"))
-                ],
-
-                next: function(choice) {
-                    switch (choice.value) {
-                        case 'vodacom_mtn': return 'state_locate_permission';
-                        case 'other': return 'state_suburb';
-                        case 'quit': return 'state_quit';
+                next: function() {
+                    var service_provider = self.im.msg.provider.trim().toUpperCase();
+                    if (self.im.config.lbs_providers.indexOf(service_provider) !== -1) {
+                        return 'state_locate_permission';
+                    } else {
+                        return 'state_suburb';
                     }
                 }
             });

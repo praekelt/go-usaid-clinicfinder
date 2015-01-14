@@ -81,7 +81,8 @@ describe("app", function() {
                 .setup.config.app({
                     name: 'test_app',
                     welcome_enabled: false,
-                    sms_number: '555'
+                    sms_number: '555',
+                    lbs_providers: ['VODACOM', 'MTN']
                 })
                 .setup(function(api) {
                     locations.fixtures.forEach(api.http.fixtures.add);
@@ -182,34 +183,14 @@ describe("app", function() {
         });
 
         describe("when the user selects a clinic type", function() {
-            it("should ask for type of sim card", function() {
-                return tester
-                    .inputs(
-                        {session_event: "new"},
-                        '1'  // state_clinic_type
-                    )
-                    .check.interaction({
-                        state: 'state_sim_type',
-                        reply: [
-                            "To find ur closest clinic we need to know " +
-                            "what SIM you have in ur phone:",
-                            "1. Vodacom or MTN",
-                            "2. Other",
-                            "3. Quit"
-                        ].join('\n')
-                    })
-                    .run();
-            });
-        });
-
-        describe("when the user selects a sim type", function() {
-            describe("if the user selects 1. Vodacom or MTN", function() {
+            describe("if the user uses a provider that provides location " +
+            "based search", function() {
                 it("should confirm locating them", function() {
                     return tester
                         .inputs(
                             {session_event: "new"},
-                            '1',  // state_clinic_type
-                            '1'  // state_sim_type
+                            { content: '1',
+                              provider: 'MTN' }  // state_clinic_type
                         )
                         .check.interaction({
                             state: 'state_locate_permission',
@@ -229,8 +210,8 @@ describe("app", function() {
                         return tester
                             .inputs(
                                 {session_event: "new"},
-                                '1',  // state_clinic_type
-                                '1',  // state_sim_type
+                                { content: '1',
+                                  provider: 'MTN' },  // state_clinic_type
                                 '1'  // state_locate_permission
                             )
                             .check.interaction({
@@ -254,8 +235,8 @@ describe("app", function() {
                         return tester
                             .inputs(
                                 {session_event: "new"},
-                                '1',  // state_clinic_type
-                                '1',  // state_sim_type
+                                { content: '1',
+                                  provider: 'MTN' },  // state_clinic_type
                                 '2'  // state_locate_permission
                             )
                             .check.interaction({
@@ -280,8 +261,8 @@ describe("app", function() {
                             return tester
                             .inputs(
                                 {session_event: "new"},
-                                '1',  // state_clinic_type
-                                '1',  // state_sim_type
+                                { content: '1',
+                                  provider: 'MTN' },  // state_clinic_type
                                 '2',  // state_locate_permission
                                 '1'  // state_reprompt_permission
                             )
@@ -306,8 +287,8 @@ describe("app", function() {
                             return tester
                             .inputs(
                                 {session_event: "new"},
-                                '1',  // state_clinic_type
-                                '1',  // state_sim_type
+                                { content: '1',
+                                  provider: 'MTN' },  // state_clinic_type
                                 '2',  // state_locate_permission
                                 '2'  // state_reprompt_permission
                             )
@@ -327,8 +308,8 @@ describe("app", function() {
                             return tester
                             .inputs(
                                 {session_event: "new"},
-                                '1',  // state_clinic_type
-                                '1',  // state_sim_type
+                                { content: '1',
+                                  provider: 'MTN' },  // state_clinic_type
                                 '2',  // state_locate_permission
                                 '3'  // state_reprompt_permission
                             )
@@ -348,13 +329,14 @@ describe("app", function() {
                 });
             });
 
-            describe("if the user selects 2. Other", function() {
+            describe("if the user does not use a provider that provides " +
+            "location based search", function() {
                 it("should ask for their suburb", function() {
                     return tester
                         .inputs(
                             {session_event: "new"},
-                            '1',  // state_clinic_type
-                            '2'  // state_sim_type
+                            { content: '1',
+                              provider: 'CellC' }  // state_clinic_type
                         )
                         .check.interaction({
                             state: 'state_suburb',
@@ -372,8 +354,8 @@ describe("app", function() {
                             return tester
                                 .inputs(
                                     {session_event: "new"},
-                                    '1',  // state_clinic_type
-                                    '2',  // state_sim_type
+                                    { content: '1',
+                                      provider: 'CellC' },  // state_clinic_type
                                     'Friend Street'  // state_suburb
                                 )
                                 .check.interaction({
@@ -395,8 +377,8 @@ describe("app", function() {
                             return tester
                                 .inputs(
                                     {session_event: "new"},
-                                    '1',  // state_clinic_type
-                                    '2',  // state_sim_type
+                                    { content: '1',
+                                      provider: 'CellC' },  // state_clinic_type
                                     'Friend Street'  // state_suburb
                                 )
                                 .check(function(api) {
@@ -419,8 +401,8 @@ describe("app", function() {
                             return tester
                                 .inputs(
                                     {session_event: "new"},
-                                    '1',  // state_clinic_type
-                                    '2',  // state_sim_type
+                                    { content: '1',
+                                      provider: 'CellC' },  // state_clinic_type
                                     'Quad Street'  // state_suburb
                                 )
                                 .check.interaction({
@@ -442,8 +424,8 @@ describe("app", function() {
                             return tester
                                 .inputs(
                                     {session_event: "new"},
-                                    '1',  // state_clinic_type
-                                    '2',  // state_sim_type
+                                    { content: '1',
+                                      provider: 'CellC' },  // state_clinic_type
                                     'Quad Street',  // state_suburb
                                     '3'  // state_suburb
                                 )
@@ -467,26 +449,6 @@ describe("app", function() {
                 });
             });
 
-            describe("if the user selects 3. Quit", function() {
-                it("should show info and end", function() {
-                    return tester
-                        .inputs(
-                            {session_event: "new"},
-                            '1',  // state_clinic_type
-                            '3'  // state_sim_type
-                        )
-                        .check.interaction({
-                            state: 'state_quit',
-                            reply:
-                                "Thanks for using Clinic Finder. For info on " +
-                                "MMC visit brothersforlife.org. For info on " +
-                                "HCT visit zazi.org.za. Find a clinic on the " +
-                                "web visit healthsites.org.za"
-                        })
-                        .check.reply.ends_session()
-                        .run();
-                });
-            });
         });
 
         describe("when the user responds to health service option", function() {
@@ -494,8 +456,8 @@ describe("app", function() {
                 return tester
                     .inputs(
                         {session_event: "new"},
-                        '1',  // state_clinic_type
-                        '2',  // state_sim_type
+                        { content: '1',
+                          provider: 'CellC' },  // state_clinic_type
                         'Friend Street',  // state_suburb
                         '2'  // state_health_services
                     )
