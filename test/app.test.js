@@ -1,5 +1,7 @@
 var vumigo = require('vumigo_v02');
 var AppTester = vumigo.AppTester;
+var _ = require('lodash');
+var fixtures = require('./fixtures');
 var LocationState = require('go-jsbox-location');
 var assert = require('assert');
 
@@ -64,9 +66,20 @@ describe("app", function() {
                     name: 'test_app',
                     welcome_enabled: false,
                     sms_number: '555',
-                    lbs_providers: ['VODACOM', 'MTN']
+                    lbs_providers: ['VODACOM', 'MTN'],
+                    api_url: 'http://127.0.0.1:8000/clinicfinder/'
                 })
                 .setup(function(api) {
+                    api.contacts.add({
+                        msisdn: '+082111',
+                        extra: {},
+                        // key: "63ee4fa9-6888-4f0c-065a-939dc2473a99",
+                        // user_account: "4a11907a-4cc4-415a-9011-58251e15e2b4"
+                    });
+                })
+
+                .setup(function(api) {
+                    fixtures().forEach(api.http.fixtures.add);
                     locations.fixtures.forEach(api.http.fixtures.add);
                 });
         });
@@ -75,6 +88,7 @@ describe("app", function() {
             describe("when a welcome screen is not enabled", function() {
                 it("should ask for type of clinic", function() {
                     return tester
+                        .setup.user.addr('082111')
                         .inputs(
                             {session_event: "new"}
                         )
@@ -95,6 +109,7 @@ describe("app", function() {
             describe("when a welcome screen is enabled", function() {
                 it("should welcome them", function() {
                     return tester
+                        .setup.user.addr('082111')
                         .setup.config.app({
                             welcome_enabled: true
                         })
@@ -119,6 +134,7 @@ describe("app", function() {
             describe("if they choose to locate a clinic", function() {
                 it("should ask for type of clinic", function() {
                     return tester
+                        .setup.user.addr('082111')
                         .setup.config.app({
                             welcome_enabled: true
                         })
@@ -143,6 +159,7 @@ describe("app", function() {
             describe("if they choose to sign up for messages", function() {
                 it("should provide info on how to subscribe", function() {
                     return tester
+                        .setup.user.addr('082111')
                         .setup.config.app({
                             welcome_enabled: true
                         })
@@ -169,6 +186,7 @@ describe("app", function() {
             "based search", function() {
                 it("should confirm locating them", function() {
                     return tester
+                        .setup.user.addr('082111')
                         .inputs(
                             {session_event: "new"},
                             { content: '1',
@@ -190,6 +208,7 @@ describe("app", function() {
                 describe("if the user chooses 1. Continue", function() {
                     it("should ask about health services opt-in", function() {
                         return tester
+                            .setup.user.addr('082111')
                             .inputs(
                                 {session_event: "new"},
                                 { content: '1',
@@ -215,6 +234,7 @@ describe("app", function() {
                 describe("if the user chooses 2. No don't locate", function() {
                     it("should reprompt for location consent", function() {
                         return tester
+                            .setup.user.addr('082111')
                             .inputs(
                                 {session_event: "new"},
                                 { content: '1',
@@ -241,6 +261,7 @@ describe("app", function() {
                     describe("if they choose 1. Give consent", function() {
                         it("should ask about health services opt-in", function() {
                             return tester
+                            .setup.user.addr('082111')
                             .inputs(
                                 {session_event: "new"},
                                 { content: '1',
@@ -267,6 +288,7 @@ describe("app", function() {
                     describe("if they choose 2. Give suburb", function() {
                         it("should prompt for their suburb", function() {
                             return tester
+                            .setup.user.addr('082111')
                             .inputs(
                                 {session_event: "new"},
                                 { content: '1',
@@ -288,6 +310,7 @@ describe("app", function() {
                     describe("if they choose 3. Quit", function() {
                         it("should show info and quit", function() {
                             return tester
+                            .setup.user.addr('082111')
                             .inputs(
                                 {session_event: "new"},
                                 { content: '1',
@@ -315,6 +338,7 @@ describe("app", function() {
             "location based search", function() {
                 it("should ask for their suburb", function() {
                     return tester
+                        .setup.user.addr('082111')
                         .inputs(
                             {session_event: "new"},
                             { content: '1',
@@ -334,6 +358,7 @@ describe("app", function() {
                     describe("if there is only one location option", function() {
                         it("should ask about health services opt-in", function() {
                             return tester
+                                .setup.user.addr('082111')
                                 .inputs(
                                     {session_event: "new"},
                                     { content: '1',
@@ -357,6 +382,7 @@ describe("app", function() {
 
                         it("should save location data to contact", function() {
                             return tester
+                                .setup.user.addr('082111')
                                 .inputs(
                                     {session_event: "new"},
                                     { content: '1',
@@ -364,7 +390,9 @@ describe("app", function() {
                                     'Friend Street'  // state_suburb
                                 )
                                 .check(function(api) {
-                                    var contact = api.contacts.store[0];
+                                    var contact = _.find(api.contacts.store, {
+                                                        msisdn: '+082111'
+                                                    });
                                     assert.equal(contact.extra[
                                         'location:formatted_address'],
                                         'Friend Street, Suburb');
@@ -381,6 +409,7 @@ describe("app", function() {
                     describe("if there are multiple location options", function() {
                         it("should display a list of address options", function() {
                             return tester
+                                .setup.user.addr('082111')
                                 .inputs(
                                     {session_event: "new"},
                                     { content: '1',
@@ -404,6 +433,7 @@ describe("app", function() {
 
                         it("should save data to contact upon choice", function() {
                             return tester
+                                .setup.user.addr('082111')
                                 .inputs(
                                     {session_event: "new"},
                                     { content: '1',
@@ -412,7 +442,9 @@ describe("app", function() {
                                     '3'  // state_suburb
                                 )
                                 .check(function(api) {
-                                    var contact = api.contacts.store[0];
+                                    var contact = _.find(api.contacts.store, {
+                                                        msisdn: '+082111'
+                                                    });
                                     assert.equal(contact.extra[
                                         'location:formatted_address'],
                                         'Quad St 3, Sub 3');
@@ -436,6 +468,7 @@ describe("app", function() {
         describe("when the user responds to health service option", function() {
             it("should store option as extra, thank them and exit", function() {
                 return tester
+                        .setup.user.addr('082111')
                     .inputs(
                         {session_event: "new"},
                         { content: '1',
@@ -452,7 +485,9 @@ describe("app", function() {
                             "clinic info message."
                     })
                     .check(function(api) {
-                        var contact = api.contacts.store[0];
+                        var contact = _.find(api.contacts.store, {
+                                                msisdn: '+082111'
+                                            });
                         assert.equal(contact.extra.health_services, 'male');
                     })
                     .check.reply.ends_session()

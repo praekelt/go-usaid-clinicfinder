@@ -105,7 +105,7 @@ go.app = function() {
 
                 next: function(choice) {
                     switch (choice.value) {
-                        case 'locate': return 'state_health_services';  // pending - change to state_send_location
+                        case 'locate': return 'state_health_services';  // pending - change to state_locate_clinic
                         case 'no_locate': return 'state_reprompt_permission';
                     }
                 }
@@ -127,7 +127,7 @@ go.app = function() {
 
                 next: function(choice) {
                     switch (choice.value) {
-                        case 'consent': return 'state_health_services';  // pending - change to state_send_location
+                        case 'consent': return 'state_health_services';  // pending - change to state_locate_clinic
                         case 'suburb': return 'state_suburb';
                         case 'quit': return 'state_quit';
                     }
@@ -152,13 +152,53 @@ go.app = function() {
                     "geometry.location.lng",
                     "geometry.location.lat"
                 ],
-                next: 'state_health_services'  // pending - change to state_send_location
+                next: 'state_locate_clinic'
             });
         });
 
-        self.states.add('state_send_location', function(name) {
+        self.locate = function(contact) {
+            console.log(contact.extra);
+
+            var location_url = self.im.config.api_url + 'requestlocation/';
+            var lookup_url = self.im.config.api_url + 'requestlookup/';
+
+            var location_data = {
+                point: {
+                    type: "Point",
+                    coordinates: [
+                        contact.extra['location:geometry:location:lng'],
+                        contact.extra['location:geometry:location:lat']
+                    ]
+                }
+            };
+
+            var lookup_data = {
+                search: {
+                    mmc: "true"
+                },
+                response: {
+                    template_type: "SMS",
+                    to_addr: contact.msisdn,
+                    template: "Your nearest clinic is %result%. Thanks for using Clinic Finder"
+                },
+                location: "http://127.0.0.1:8000/clinicfinder/requestlocation/2/"
+            };
+
             return self.http
-                .post(target, coordinates, clinic_type, template_text)
+                .post(location_url, {
+                    data: location_data
+                })
+                .then(function(response) {
+                    return self.http
+                        .post(lookup_url, {
+                            data: lookup_data
+                        });
+                });
+        };
+
+        self.states.add('state_locate_clinic', function(name) {
+            return self
+                .locate(self.contact)
                 .then(function() {
                     return self.states.create('state_health_services');
                 });
