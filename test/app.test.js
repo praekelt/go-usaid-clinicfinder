@@ -361,7 +361,7 @@ describe("app", function() {
                                 .setup.user.addr('082111')
                                 .inputs(
                                     {session_event: "new"},
-                                    { content: '1',
+                                    { content: '2',
                                       provider: 'CellC' },  // state_clinic_type
                                     'Friend Street'  // state_suburb
                                 )
@@ -385,7 +385,7 @@ describe("app", function() {
                                 .setup.user.addr('082111')
                                 .inputs(
                                     {session_event: "new"},
-                                    { content: '1',
+                                    { content: '2',
                                       provider: 'CellC' },  // state_clinic_type
                                     'Friend Street'  // state_suburb
                                 )
@@ -412,7 +412,7 @@ describe("app", function() {
                                 .setup.user.addr('082111')
                                 .inputs(
                                     {session_event: "new"},
-                                    { content: '1',
+                                    { content: '2',
                                       provider: 'CellC' },  // state_clinic_type
                                     'Quad Street'  // state_suburb
                                 )
@@ -436,7 +436,7 @@ describe("app", function() {
                                 .setup.user.addr('082111')
                                 .inputs(
                                     {session_event: "new"},
-                                    { content: '1',
+                                    { content: '2',
                                       provider: 'CellC' },  // state_clinic_type
                                     'Quad Street',  // state_suburb
                                     '3'  // state_suburb
@@ -471,7 +471,7 @@ describe("app", function() {
                         .setup.user.addr('082111')
                     .inputs(
                         {session_event: "new"},
-                        { content: '1',
+                        { content: '2',
                           provider: 'CellC' },  // state_clinic_type
                         'Friend Street',  // state_suburb
                         '2'  // state_health_services

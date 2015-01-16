@@ -22,6 +22,47 @@ go.app = function() {
                 });
         };
 
+        self.locate = function(contact) {
+            var location_url = self.im.config.api_url + 'requestlocation/';
+            var lookup_url = self.im.config.api_url + 'requestlookup/';
+
+            var location_data = {
+                point: {
+                    type: "Point",
+                    coordinates: [
+                        contact.extra['location:geometry:location:lng'],
+                        contact.extra['location:geometry:location:lat']
+                    ]
+                }
+            };
+
+            var lookup_data = {
+                search: {
+                    mmc: ((self.im.user.answers.state_clinic_type === 'mmc') ? "true" : "false")
+                },
+                response: {
+                    template_type: "SMS",
+                    to_addr: contact.msisdn,
+                    template: "Your nearest clinic is %result%. Thanks for using Clinic Finder"
+                },
+                location: "http://127.0.0.1:8000/clinicfinder/requestlocation/"
+            };
+
+            return self.http
+                .post(location_url, {
+                    data: location_data
+                })
+                .then(function(response) {
+                    lookup_data.location += (response.data.id + '/');
+                    return self.http
+                        .post(lookup_url, {
+                            data: lookup_data
+                        });
+                });
+        };
+
+
+        // STATES
         self.states.add('state_start', function(name) {
             if (self.im.config.welcome_enabled) {
                 return self.states.create('state_welcome');
@@ -149,51 +190,18 @@ go.app = function() {
             });
         });
 
-        self.locate = function(contact) {
-            console.log(contact.extra);
-
-            var location_url = self.im.config.api_url + 'requestlocation/';
-            var lookup_url = self.im.config.api_url + 'requestlookup/';
-
-            var location_data = {
-                point: {
-                    type: "Point",
-                    coordinates: [
-                        contact.extra['location:geometry:location:lng'],
-                        contact.extra['location:geometry:location:lat']
-                    ]
-                }
-            };
-
-            var lookup_data = {
-                search: {
-                    mmc: "true"
-                },
-                response: {
-                    template_type: "SMS",
-                    to_addr: contact.msisdn,
-                    template: "Your nearest clinic is %result%. Thanks for using Clinic Finder"
-                },
-                location: "http://127.0.0.1:8000/clinicfinder/requestlocation/2/"
-            };
-
-            return self.http
-                .post(location_url, {
-                    data: location_data
-                })
-                .then(function(response) {
-                    return self.http
-                        .post(lookup_url, {
-                            data: lookup_data
-                        });
-                });
-        };
-
         self.states.add('state_locate_clinic', function(name) {
-            return self
-                .locate(self.contact)
+            return self.im.contacts
+                .for_user()
+                .then(function(user_contact) {
+                    self.contact = user_contact;
+                })
                 .then(function() {
-                    return self.states.create('state_health_services');
+                    return self
+                        .locate(self.contact)
+                        .then(function() {
+                            return self.states.create('state_health_services');
+                        });
                 });
         });
 
