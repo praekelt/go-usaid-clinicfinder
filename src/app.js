@@ -22,7 +22,21 @@ go.app = function() {
                 });
         };
 
-        self.locate = function(contact) {
+        self.make_clinic_search_params = function() {
+            var clinic_type_requested = self.im.user.answers.state_clinic_type;
+            var search_data = {};
+
+            if (clinic_type_requested === "nearest") {
+                self.im.config.clinic_types.forEach(function(clinic_type) {
+                    search_data[clinic_type] = "true";
+                });
+            } else {
+                search_data[clinic_type_requested] = "true";
+            }
+            return search_data;
+        };
+
+        self.manual_locate = function(contact) {
             var location_url = self.im.config.api_url + 'requestlocation/';
             var lookup_url = self.im.config.api_url + 'requestlookup/';
 
@@ -37,15 +51,14 @@ go.app = function() {
             };
 
             var lookup_data = {
-                search: {
-                    mmc: ((self.im.user.answers.state_clinic_type === 'mmc') ? "true" : "false")
-                },
+                search: self.make_clinic_search_params(),
                 response: {
                     template_type: "SMS",
                     to_addr: contact.msisdn,
-                    template: "Your nearest clinic is %result%. Thanks for using Clinic Finder"
+                    template: "Your nearest clinic is %result%. Thanks for " +
+                              "using Clinic Finder"
                 },
-                location: "http://127.0.0.1:8000/clinicfinder/requestlocation/"
+                location: location_url
             };
 
             return self.http
@@ -59,6 +72,42 @@ go.app = function() {
                             data: lookup_data
                         });
                 });
+        };
+
+        self.lbs_locate = function(contact) {
+            var lookup_url = self.im.config.api_url + 'requestlookup/';
+            var lbs_url = self.im.config.api_url + 'lbsrequest/';
+
+            lbs_data = {
+                search: {
+                    msisdn: contact.msisdn.replace(/[^0-9]/g, "")  // remove '+'
+                },
+                pointofinterest: lookup_url
+            };
+
+            var lookup_data = {
+                search: self.make_clinic_search_params(),
+                response: {
+                    template_type: "SMS",
+                    to_addr: contact.msisdn,
+                    template: "Your nearest clinic is %result%. Thanks for " +
+                              "using Clinic Finder"
+                },
+                location: null
+            };
+
+            return self.http
+                .post(lookup_url, {
+                    data: lookup_data
+                })
+                .then(function(response) {
+                    lbs_data.pointofinterest += (response.data.id + '/');
+                    return self.http
+                        .post(lbs_url, {
+                            data: lbs_data
+                        });
+                });
+
         };
 
 
@@ -139,7 +188,7 @@ go.app = function() {
 
                 next: function(choice) {
                     switch (choice.value) {
-                        case 'locate': return 'state_health_services';  // pending - change to state_locate_clinic
+                        case 'locate': return 'state_lbs_locate';
                         case 'no_locate': return 'state_reprompt_permission';
                     }
                 }
@@ -161,12 +210,20 @@ go.app = function() {
 
                 next: function(choice) {
                     switch (choice.value) {
-                        case 'consent': return 'state_health_services';  // pending - change to state_locate_clinic
+                        case 'consent': return 'state_lbs_locate';
                         case 'suburb': return 'state_suburb';
                         case 'quit': return 'state_quit';
                     }
                 }
             });
+        });
+
+        self.states.add('state_lbs_locate', function(name) {
+            return self
+                .lbs_locate(self.contact)
+                .then(function() {
+                    return self.states.create('state_health_services');
+                });
         });
 
         self.states.add('state_suburb', function(name) {
@@ -198,7 +255,7 @@ go.app = function() {
                 })
                 .then(function() {
                     return self
-                        .locate(self.contact)
+                        .manual_locate(self.contact)
                         .then(function() {
                             return self.states.create('state_health_services');
                         });

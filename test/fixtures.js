@@ -64,6 +64,7 @@ module.exports = function() {
          },
          "response": {
             "data": {
+               "id": 1,
                "url": "http://127.0.0.1:8000/clinicfinder/requestlookup/1/",
                "search": {
                   "mmc": "true"
@@ -99,6 +100,7 @@ module.exports = function() {
          },
          "response": {
             "data": {
+               "id": 2,
                "url": "http://127.0.0.1:8000/clinicfinder/requestlookup/2/",
                "search": {
                   "mmc": "true"
@@ -113,6 +115,71 @@ module.exports = function() {
                "updated_at": "2015-01-14T10:40:16.892Z"
             }
          }
+      },
+
+
+      {
+         "request": {
+            "method": "POST",
+            "url": "http://127.0.0.1:8000/clinicfinder/requestlookup/",
+            "data": {
+               "search": {
+                  "mmc": "true",
+                  "hct": "true"
+               },
+               "response": {
+                  "template_type": "SMS",
+                  "to_addr": "+082111",
+                  "template": "Your nearest clinic is %result%. Thanks for using Clinic Finder"
+               },
+               "location": null
+            }
+         },
+         "response": {
+            "data": {
+               "id": 3,
+               "url": "http://127.0.0.1:8000/clinicfinder/requestlookup/3",
+               "search": {
+                  "mmc": "true",
+                  "hct": "true"
+               },
+               "response": {
+                  "template_type": "SMS",
+                  "to_addr": "+082111",
+                  "template": "Your nearest clinic is %result%. Thanks for using Clinic Finder"
+               },
+               "location": null  ,
+               "created_at": "2015-01-14T10:40:16.892Z",
+               "updated_at": "2015-01-14T10:40:16.892Z"
+            }
+         }
+      },
+
+
+      {
+         "request": {
+            "method": "POST",
+            "url": "http://127.0.0.1:8000/clinicfinder/lbsrequest/",
+            "data": {
+               "search": {
+                  "msisdn": "082111"
+               },
+               "pointofinterest": "http://127.0.0.1:8000/clinicfinder/requestlookup/3/"
+            }
+         },
+         "response": {
+            "data": {
+               "id": 1,
+               "url": "http://127.0.0.1:8000/clinicfinder/lbsrequest/",
+               "search": {
+                  "msisdn": "082111"
+               },
+               "pointofinterest": "http://127.0.0.1:8000/clinicfinder/requestlookup/3/",
+               "created_at": "2015-01-14T10:40:16.892Z",
+               "updated_at": "2015-01-14T10:40:16.892Z"
+            }
+         }
       }
+
    ];
 };
