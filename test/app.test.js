@@ -21,7 +21,7 @@ describe("app", function() {
                 response_data: {
                     results: [
                         {
-                            formatted_address:"Friend Street, Suburb",
+                            display_name:"Friend Street, Suburb",
                             geometry: {
                                 location: {lng: '3.1415', lat: '2.7182'}
                             }
@@ -36,24 +36,51 @@ describe("app", function() {
                 response_data: {
                     results: [
                         {
-                            formatted_address:"Quad St 1, Sub 1",
+                            display_name:"Quad St 1, Sub 1",
                             geometry: {
                                 location: { lng: '1.1', lat: '1.11' }
+                            },
+                            address: {
+                                road: "Quad St 1",
+                                city: "City 1",
+                                postcode: "0001",
+                                country: "RSA",
+                                country_code: "za"
                             }
                         },{
-                            formatted_address:"Quad St 2, Sub 2",
+                            display_name:"Quad St 2, Sub 2",
                             geometry: {
                                 location: { lng: '2.2', lat: '2.22' }
+                            },
+                            address: {
+                                road: "Quad St 2",
+                                town: "Town 2",
+                                postcode: "0002",
+                                country: "RSA",
+                                country_code: "za"
                             }
                         },{
-                            formatted_address:"Quad St 3, Sub 3",
+                            display_name:"Quad St 3, Sub 3",
                             geometry: {
                                 location: { lng: '3.3', lat: '3.33' }
+                            },
+                            address: {
+                                road: "Quad St 3",
+                                city: "City 3",
+                                postcode: "0003",
+                                country: "RSA",
+                                country_code: "za"
                             }
                         },{
-                            formatted_address:"Quad St 4, Sub 4",
+                            display_name:"Quad St 4, Sub 4",
                             geometry: {
                                 location: { lng: '4.4', lat: '4.44' }
+                            },
+                            address: {
+                                road: "Quad St 4",
+                                postcode: "0004",
+                                country: "RSA",
+                                country_code: "za"
                             }
                         }
                     ],
@@ -394,14 +421,12 @@ describe("app", function() {
                                                         msisdn: '+082111'
                                                     });
                                     assert.equal(contact.extra[
-                                        'location:formatted_address'],
+                                        'location:display_name'],
                                         'Friend Street, Suburb');
                                     assert.equal(contact.extra[
-                                        'location:geometry:location:lng'],
-                                        '3.1415');
+                                        'location:lon'], '3.1415');
                                     assert.equal(contact.extra[
-                                        'location:geometry:location:lat'],
-                                        '2.7182');
+                                        'location:lat'], '2.7182');
                                 })
                                 .run();
                         });
@@ -420,13 +445,79 @@ describe("app", function() {
                                     state: 'state_suburb',
                                     reply: [
                                         "Please select your location:",
-                                        "1. Quad St 1, Sub 1",
-                                        "2. Quad St 2, Sub 2",
-                                        "3. Quad St 3, Sub 3",
-                                        "4. Quad St 4, Sub 4",
+                                        "1. Quad St 1, City 1, 0001, RSA",
+                                        "2. Quad St 2, Town 2, 0002, RSA",
+                                        "3. Quad St 3, City 3, 0003, RSA",
                                         "n. Next",
-                                        "p. Previous"
+                                        "p. Previous",
+                                        "s. Exit"
                                     ].join('\n')
+                                })
+                                .run();
+                        });
+
+                        it("should go the next page if 'n' is chosen", function() {
+                            return tester
+                                .setup.user.addr('082111')
+                                .inputs(
+                                    {session_event: "new"},
+                                    { content: '2',
+                                      provider: 'CellC' },  // state_clinic_type
+                                    'Quad Street',  // state_suburb
+                                    'n'  // state_suburb
+                                )
+                                .check.interaction({
+                                    state: 'state_suburb',
+                                    reply: [
+                                        "Please select your location:",
+                                        "1. Quad St 4, 0004, RSA",
+                                        "r. Try again",
+                                        "p. Previous",
+                                        "s. Exit"
+                                    ].join('\n')
+                                })
+                                .run();
+                        });
+
+                        it("should show info and quit if Exit chosen", function() {
+                            return tester
+                                .setup.user.addr('082111')
+                                .inputs(
+                                    {session_event: "new"},
+                                    { content: '2',
+                                      provider: 'CellC' },  // state_clinic_type
+                                    'Quad Street',  // state_suburb
+                                    's'  // state_suburb
+                                )
+                                .check.interaction({
+                                    state: 'state_quit',
+                                    reply:
+                                        "Thanks for using Clinic Finder. For info on " +
+                                        "MMC visit brothersforlife.org. For info on " +
+                                        "HCT visit zazi.org.za. Find a clinic on the " +
+                                        "web visit healthsites.org.za"
+                                })
+                                .check.reply.ends_session()
+                                .run();
+                        });
+
+                        it("should ask suburb again if 'r' is chosen", function() {
+                            return tester
+                                .setup.user.addr('082111')
+                                .inputs(
+                                    {session_event: "new"},
+                                    { content: '2',
+                                      provider: 'CellC' },  // state_clinic_type
+                                    'Quad Street',  // state_suburb
+                                    'n',  // state_suburb
+                                    'r'  // state_suburb
+                                )
+                                .check.interaction({
+                                    state: 'state_suburb',
+                                    reply:
+                                        "To find your closest clinic we need to know " +
+                                        "what suburb or area u are in. Please be " +
+                                        "specific. e.g. Inanda Sandton"
                                 })
                                 .run();
                         });
@@ -446,14 +537,12 @@ describe("app", function() {
                                                         msisdn: '+082111'
                                                     });
                                     assert.equal(contact.extra[
-                                        'location:formatted_address'],
-                                        'Quad St 3, Sub 3');
+                                        'location:display_name'],
+                                        'Quad St 3, City 3, 0003, RSA');
                                     assert.equal(contact.extra[
-                                        'location:geometry:location:lng'],
-                                        '3.3');
+                                        'location:lon'], '3.3');
                                     assert.equal(contact.extra[
-                                        'location:geometry:location:lat'],
-                                        '3.33');
+                                        'location:lat'], '3.33');
                                 })
                                 .run();
                         });

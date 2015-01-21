@@ -217,6 +217,7 @@ go.app = function() {
 
         self.states.add('state_suburb', function(name) {
             return new LocationState(name, {
+                mapping_service: 'osmaps',
                 question:
                     $("To find your closest clinic we need to know " +
                       "what suburb or area u are in. Please be " +
@@ -227,12 +228,16 @@ go.app = function() {
                       "and make sure you use the correct spelling."),
                 refine_question:
                     $("Please select your location:"),
-                store_fields: [
-                    "formatted_address",
-                    "geometry.location.lng",
-                    "geometry.location.lat"
-                ],
-                next: 'state_locate_clinic'
+                next: 'state_locate_clinic',
+                skip: 'state_quit',
+                skip_text: 'Exit',
+                retry_text: 'Try again',
+                map_api_opts: {
+                    store_fields: ["display_name", "lon", "lat"],
+                    address_details: ["road", "city", "town", "postcode",
+                                      "country"],
+                    bounding_box: ["16.4500", "-22.1278", "32.8917", "-34.8333"]
+                }
             });
         });
 
