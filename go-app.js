@@ -25,7 +25,11 @@ go.app = function() {
             self.req_lookup_url = self.im.config.api_url + 'requestlookup/';
             self.lbsrequest_url = self.im.config.api_url + 'lbsrequest/';
 
-            self.http = new JsonApi(self.im);
+            self.http = new JsonApi(self.im, {
+                headers: {
+                    'Authorization': ['Token ' + self.im.config.api_key]
+                }
+            });
 
             return self.im.contacts
                 .for_user()
