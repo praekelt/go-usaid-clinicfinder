@@ -67,7 +67,8 @@ describe("app", function() {
                     welcome_enabled: false,
                     sms_number: '555',
                     lbs_providers: ['VODACOM', 'MTN'],
-                    api_url: 'http://127.0.0.1:8000/clinicfinder/'
+                    api_url: 'http://127.0.0.1:8000/clinicfinder/',
+                    clinic_types: ['mmc', 'hct']
                 })
                 .setup(function(api) {
                     api.contacts.add({
