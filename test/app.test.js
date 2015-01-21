@@ -68,14 +68,13 @@ describe("app", function() {
                     sms_number: '555',
                     lbs_providers: ['VODACOM', 'MTN'],
                     api_url: 'http://127.0.0.1:8000/clinicfinder/',
+                    api_key: 'replace_with_token',
                     clinic_types: ['mmc', 'hct']
                 })
                 .setup(function(api) {
                     api.contacts.add({
                         msisdn: '+082111',
                         extra: {},
-                        // key: "63ee4fa9-6888-4f0c-065a-939dc2473a99",
-                        // user_account: "4a11907a-4cc4-415a-9011-58251e15e2b4"
                     });
                 })
 
