@@ -3,52 +3,6 @@ module.exports = function() {
       {
          "request": {
             "method": "POST",
-            "url": "http://127.0.0.1:8000/clinicfinder/requestlocation/",
-            "data": {
-               "point": {
-                  "type": "Point",
-                  "coordinates": ["3.3", "3.33"]
-               }
-            }
-         },
-         "response": {
-            "data": {
-               "id": 1,
-               "point": {
-                  "type": "Point",
-                  "coordinates": ["3.3", "3.33"]
-               }
-            }
-         }
-      },
-
-
-      {
-         "request": {
-            "method": "POST",
-            "url": "http://127.0.0.1:8000/clinicfinder/requestlocation/",
-            "data": {
-               "point": {
-                  "type": "Point",
-                  "coordinates": ["3.1415", "2.7182"]
-               }
-            }
-         },
-         "response": {
-            "data": {
-               "id": 2,
-               "point": {
-                  "type": "Point",
-                  "coordinates": ["3.1415", "2.7182"]
-               }
-            }
-         }
-      },
-
-
-      {
-         "request": {
-            "method": "POST",
             "url": "http://127.0.0.1:8000/clinicfinder/requestlookup/",
             "data": {
                "search": {
@@ -57,9 +11,14 @@ module.exports = function() {
                "response": {
                   "template_type": "SMS",
                   "to_addr": "+082111",
-                  "template": "Your nearest clinic is %result%. Thanks for using Clinic Finder"
+                  "template": "Your nearest clinic is {{ results }}. Thanks for using Clinic Finder"
                },
-               "location": "http://127.0.0.1:8000/clinicfinder/requestlocation/1/"
+               "location": {
+                  "point": {
+                     "type": "Point",
+                     "coordinates": ["3.3", "3.33"]
+                  }
+               }
             }
          },
          "response": {
@@ -72,11 +31,15 @@ module.exports = function() {
                "response": {
                   "template_type": "SMS",
                   "to_addr": "+082111",
-                  "template": "Your nearest clinic is %result%. Thanks for using Clinic Finder"
+                  "template": "Your nearest clinic is {{ results }}. Thanks for using Clinic Finder"
                },
-               "location": "http://127.0.0.1:8000/clinicfinder/requestlocation/1/",
-               "created_at": "2015-01-14T10:40:16.892Z",
-               "updated_at": "2015-01-14T10:40:16.892Z"
+               "location": {
+                  "id": 1,
+                  "point": {
+                     "type": "Point",
+                     "coordinates": ["3.3", "3.33"]
+                  }
+               }
             }
          }
       },
@@ -93,9 +56,14 @@ module.exports = function() {
                "response": {
                   "template_type": "SMS",
                   "to_addr": "+082111",
-                  "template": "Your nearest clinic is %result%. Thanks for using Clinic Finder"
+                  "template": "Your nearest clinic is {{ results }}. Thanks for using Clinic Finder"
                },
-               "location": "http://127.0.0.1:8000/clinicfinder/requestlocation/2/"
+               "location": {
+                  "point": {
+                     "type": "Point",
+                     "coordinates": ["3.1415", "2.7182"]
+                  }
+               }
             }
          },
          "response": {
@@ -108,49 +76,15 @@ module.exports = function() {
                "response": {
                   "template_type": "SMS",
                   "to_addr": "+082111",
-                  "template": "Your nearest clinic is %result%. Thanks for using Clinic Finder"
+                  "template": "Your nearest clinic is {{ results }}. Thanks for using Clinic Finder"
                },
-               "location": "http://127.0.0.1:8000/clinicfinder/requestlocation/2/",
-               "created_at": "2015-01-14T10:40:16.892Z",
-               "updated_at": "2015-01-14T10:40:16.892Z"
-            }
-         }
-      },
-
-
-      {
-         "request": {
-            "method": "POST",
-            "url": "http://127.0.0.1:8000/clinicfinder/requestlookup/",
-            "data": {
-               "search": {
-                  "mmc": "true",
-                  "hct": "true"
-               },
-               "response": {
-                  "template_type": "SMS",
-                  "to_addr": "+082111",
-                  "template": "Your nearest clinic is %result%. Thanks for using Clinic Finder"
-               },
-               "location": null
-            }
-         },
-         "response": {
-            "data": {
-               "id": 3,
-               "url": "http://127.0.0.1:8000/clinicfinder/requestlookup/3",
-               "search": {
-                  "mmc": "true",
-                  "hct": "true"
-               },
-               "response": {
-                  "template_type": "SMS",
-                  "to_addr": "+082111",
-                  "template": "Your nearest clinic is %result%. Thanks for using Clinic Finder"
-               },
-               "location": null  ,
-               "created_at": "2015-01-14T10:40:16.892Z",
-               "updated_at": "2015-01-14T10:40:16.892Z"
+               "location": {
+                  "id": 2,
+                  "point": {
+                     "type": "Point",
+                     "coordinates": ["3.1415", "2.7182"]
+                  }
+               }
             }
          }
       },
@@ -164,19 +98,40 @@ module.exports = function() {
                "search": {
                   "msisdn": "082111"
                },
-               "pointofinterest": "http://127.0.0.1:8000/clinicfinder/requestlookup/3/"
+               "pointofinterest": {
+                  "search": {
+                     "mmc": "true",
+                     "hct": "true"
+                  },
+                  "response": {
+                     "template_type": "SMS",
+                     "to_addr": "+082111",
+                     "template": "Your nearest clinic is {{ results }}. Thanks for using Clinic Finder"
+                  },
+                  "location": null
+               }
             }
          },
          "response": {
             "data": {
                "id": 1,
-               "url": "http://127.0.0.1:8000/clinicfinder/lbsrequest/",
+               "url": "http://127.0.0.1:8000/clinicfinder/lbsrequest/1/",
                "search": {
                   "msisdn": "082111"
                },
-               "pointofinterest": "http://127.0.0.1:8000/clinicfinder/requestlookup/3/",
-               "created_at": "2015-01-14T10:40:16.892Z",
-               "updated_at": "2015-01-14T10:40:16.892Z"
+               "pointofinterest": {
+                  "id": 3,
+                  "search": {
+                     "mmc": "true",
+                     "hct": "true"
+                  },
+                  "response": {
+                     "template_type": "SMS",
+                     "to_addr": "+082111",
+                     "template": "Your nearest clinic is {{ results }}. Thanks for using Clinic Finder"
+                  },
+                  "location": null
+               }
             }
          }
       }

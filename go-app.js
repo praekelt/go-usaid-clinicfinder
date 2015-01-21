@@ -68,8 +68,8 @@ go.app = function() {
                 response: {
                     template_type: "SMS",
                     to_addr: contact.msisdn,
-                    template: "Your nearest clinic is %result%. Thanks for " +
-                              "using Clinic Finder"
+                    template: "Your nearest clinic is {{ results }}. Thanks " +
+                              "for using Clinic Finder"
                 },
                 location: location
             };
@@ -88,31 +88,18 @@ go.app = function() {
 
         self.manual_locate = function(contact) {
             return self.http
-                .post(self.req_location_url, {
-                    data: self.make_location_data(contact)
-                })
-                .then(function(response) {
-                    return self.http
-                        .post(self.req_lookup_url, {
-                            data: self.make_lookup_data(contact,
-                                self.req_location_url + response.data.id + '/')
-                        });
+                .post(self.req_lookup_url, {
+                    data: self.make_lookup_data(contact,
+                        self.make_location_data(contact))
                 });
         };
 
         self.lbs_locate = function(contact) {
             return self.http
-                .post(self.req_lookup_url, {
-                    data: self.make_lookup_data(contact, null)
-                })
-                .then(function(response) {
-                    return self.http
-                        .post(self.lbsrequest_url, {
-                            data: self.make_lbs_data(contact,
-                                self.req_lookup_url + response.data.id + '/')
-                        });
+                .post(self.lbsrequest_url, {
+                    data: self.make_lbs_data(contact,
+                        self.make_lookup_data(contact, null))
                 });
-
         };
 
 
