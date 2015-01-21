@@ -20,6 +20,11 @@ go.app = function() {
         var $ = self.$;
 
         self.init = function() {
+            // Configure URLs
+            self.req_location_url = self.im.config.api_url + 'requestlocation/';
+            self.req_lookup_url = self.im.config.api_url + 'requestlookup/';
+            self.lbsrequest_url = self.im.config.api_url + 'lbsrequest/';
+
             self.http = new JsonApi(self.im);
 
             return self.im.contacts
@@ -28,6 +33,7 @@ go.app = function() {
                    self.contact = user_contact;
                 });
         };
+
 
         self.make_clinic_search_params = function() {
             var clinic_type_requested = self.im.user.answers.state_clinic_type;
@@ -43,10 +49,7 @@ go.app = function() {
             return search_data;
         };
 
-        self.manual_locate = function(contact) {
-            var location_url = self.im.config.api_url + 'requestlocation/';
-            var lookup_url = self.im.config.api_url + 'requestlookup/';
-
+        self.make_location_data = function(contact) {
             var location_data = {
                 point: {
                     type: "Point",
@@ -56,7 +59,10 @@ go.app = function() {
                     ]
                 }
             };
+            return location_data;
+        };
 
+        self.make_lookup_data = function(contact, location) {
             var lookup_data = {
                 search: self.make_clinic_search_params(),
                 response: {
@@ -65,53 +71,45 @@ go.app = function() {
                     template: "Your nearest clinic is %result%. Thanks for " +
                               "using Clinic Finder"
                 },
-                location: location_url
+                location: location
             };
+            return lookup_data;
+        };
 
+        self.make_lbs_data = function(contact, pointofinterest) {
+            var lbs_data = {
+                search: {
+                    msisdn: contact.msisdn.replace(/[^0-9]/g, "")  // remove '+'
+                },
+                pointofinterest: pointofinterest
+            };
+            return lbs_data;
+        };
+
+        self.manual_locate = function(contact) {
             return self.http
-                .post(location_url, {
-                    data: location_data
+                .post(self.req_location_url, {
+                    data: self.make_location_data(contact)
                 })
                 .then(function(response) {
-                    lookup_data.location += (response.data.id + '/');
                     return self.http
-                        .post(lookup_url, {
-                            data: lookup_data
+                        .post(self.req_lookup_url, {
+                            data: self.make_lookup_data(contact,
+                                self.req_location_url + response.data.id + '/')
                         });
                 });
         };
 
         self.lbs_locate = function(contact) {
-            var lookup_url = self.im.config.api_url + 'requestlookup/';
-            var lbs_url = self.im.config.api_url + 'lbsrequest/';
-
-            lbs_data = {
-                search: {
-                    msisdn: contact.msisdn.replace(/[^0-9]/g, "")  // remove '+'
-                },
-                pointofinterest: lookup_url
-            };
-
-            var lookup_data = {
-                search: self.make_clinic_search_params(),
-                response: {
-                    template_type: "SMS",
-                    to_addr: contact.msisdn,
-                    template: "Your nearest clinic is %result%. Thanks for " +
-                              "using Clinic Finder"
-                },
-                location: null
-            };
-
             return self.http
-                .post(lookup_url, {
-                    data: lookup_data
+                .post(self.req_lookup_url, {
+                    data: self.make_lookup_data(contact, null)
                 })
                 .then(function(response) {
-                    lbs_data.pointofinterest += (response.data.id + '/');
                     return self.http
-                        .post(lbs_url, {
-                            data: lbs_data
+                        .post(self.lbsrequest_url, {
+                            data: self.make_lbs_data(contact,
+                                self.req_lookup_url + response.data.id + '/')
                         });
                 });
 
