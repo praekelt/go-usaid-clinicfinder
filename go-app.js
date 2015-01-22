@@ -160,7 +160,7 @@ go.app = function() {
                 ],
 
                 next: function() {
-                    if (typeof self.im.msg.provider !== 'undefined') {
+                    if (typeof self.im.msg.provider !== 'undefined' && self.im.msg.provider !== null) {
                         var service_provider = self.im.msg.provider.trim().toUpperCase();
                         if (self.im.config.lbs_providers.indexOf(service_provider) !== -1) {
                             return 'state_locate_permission';
