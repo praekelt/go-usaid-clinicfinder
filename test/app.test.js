@@ -334,6 +334,26 @@ describe("app", function() {
                 });
             });
 
+            describe("if the user on transport that does not have provider for " +
+            "location based search", function() {
+                it("should ask for their suburb", function() {
+                    return tester
+                        .setup.user.addr('082111')
+                        .inputs(
+                            {session_event: "new"},
+                            { content: '1' }  // state_clinic_type
+                        )
+                        .check.interaction({
+                            state: 'state_suburb',
+                            reply:
+                                "To find your closest clinic we need to know " +
+                                "what suburb or area u are in. Please be " +
+                                "specific. e.g. Inanda Sandton"
+                        })
+                        .run();
+                });
+            });
+
             describe("if the user does not use a provider that provides " +
             "location based search", function() {
                 it("should ask for their suburb", function() {

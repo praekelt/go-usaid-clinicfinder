@@ -160,12 +160,18 @@ go.app = function() {
                 ],
 
                 next: function() {
-                    var service_provider = self.im.msg.provider.trim().toUpperCase();
-                    if (self.im.config.lbs_providers.indexOf(service_provider) !== -1) {
-                        return 'state_locate_permission';
+                    if (typeof self.im.msg.provider !== 'undefined') {
+                        var service_provider = self.im.msg.provider.trim().toUpperCase();
+                        if (self.im.config.lbs_providers.indexOf(service_provider) !== -1) {
+                            return 'state_locate_permission';
+                        } else {
+                            return 'state_suburb';
+                        }
                     } else {
+                        // For transports that don't provide provider info
                         return 'state_suburb';
                     }
+
                 }
             });
         });
