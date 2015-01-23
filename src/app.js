@@ -63,7 +63,7 @@ go.app = function() {
             var lookup_data = {
                 search: self.make_clinic_search_params(),
                 response: {
-                    template_type: "SMS",
+                    type: "SMS",
                     to_addr: contact.msisdn,
                     template: "Your nearest clinic is {{ results }}. Thanks " +
                               "for using Clinic Finder"
