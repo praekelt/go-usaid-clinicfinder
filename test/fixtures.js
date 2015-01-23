@@ -16,7 +16,7 @@ module.exports = function() {
                "location": {
                   "point": {
                      "type": "Point",
-                     "coordinates": ["3.3", "3.33"]
+                     "coordinates": [3.3, 3.33]
                   }
                }
             }
@@ -37,7 +37,7 @@ module.exports = function() {
                   "id": 1,
                   "point": {
                      "type": "Point",
-                     "coordinates": ["3.3", "3.33"]
+                     "coordinates": [3.3, 3.33]
                   }
                }
             }
@@ -61,7 +61,7 @@ module.exports = function() {
                "location": {
                   "point": {
                      "type": "Point",
-                     "coordinates": ["3.1415", "2.7182"]
+                     "coordinates": [3.1415, 2.7182]
                   }
                }
             }
@@ -82,7 +82,7 @@ module.exports = function() {
                   "id": 2,
                   "point": {
                      "type": "Point",
-                     "coordinates": ["3.1415", "2.7182"]
+                     "coordinates": [3.1415, 2.7182]
                   }
                }
             }
