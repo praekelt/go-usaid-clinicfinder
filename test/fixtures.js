@@ -9,7 +9,7 @@ module.exports = function() {
                   "mmc": "true"
                },
                "response": {
-                  "template_type": "SMS",
+                  "type": "SMS",
                   "to_addr": "+082111",
                   "template": "Your nearest clinic is {{ results }}. Thanks for using Clinic Finder"
                },
@@ -29,7 +29,7 @@ module.exports = function() {
                   "mmc": "true"
                },
                "response": {
-                  "template_type": "SMS",
+                  "type": "SMS",
                   "to_addr": "+082111",
                   "template": "Your nearest clinic is {{ results }}. Thanks for using Clinic Finder"
                },
@@ -54,7 +54,7 @@ module.exports = function() {
                   "mmc": "true"
                },
                "response": {
-                  "template_type": "SMS",
+                  "type": "SMS",
                   "to_addr": "+082111",
                   "template": "Your nearest clinic is {{ results }}. Thanks for using Clinic Finder"
                },
@@ -74,7 +74,7 @@ module.exports = function() {
                   "mmc": "true"
                },
                "response": {
-                  "template_type": "SMS",
+                  "type": "SMS",
                   "to_addr": "+082111",
                   "template": "Your nearest clinic is {{ results }}. Thanks for using Clinic Finder"
                },
@@ -104,7 +104,7 @@ module.exports = function() {
                      "hct": "true"
                   },
                   "response": {
-                     "template_type": "SMS",
+                     "type": "SMS",
                      "to_addr": "+082111",
                      "template": "Your nearest clinic is {{ results }}. Thanks for using Clinic Finder"
                   },
@@ -126,7 +126,7 @@ module.exports = function() {
                      "hct": "true"
                   },
                   "response": {
-                     "template_type": "SMS",
+                     "type": "SMS",
                      "to_addr": "+082111",
                      "template": "Your nearest clinic is {{ results }}. Thanks for using Clinic Finder"
                   },
