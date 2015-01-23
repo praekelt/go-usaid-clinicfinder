@@ -51,8 +51,8 @@ go.app = function() {
                 point: {
                     type: "Point",
                     coordinates: [
-                        contact.extra['location:geometry:location:lng'],
-                        contact.extra['location:geometry:location:lat']
+                        parseFloat(contact.extra['location:geometry:location:lng']),
+                        parseFloat(contact.extra['location:geometry:location:lat'])
                     ]
                 }
             };
