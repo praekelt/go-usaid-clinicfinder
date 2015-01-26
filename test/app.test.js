@@ -198,6 +198,21 @@ describe("app", function() {
         });
 
         describe("when the user selects a clinic type", function() {
+            it("should incr the clinic_type metric", function() {
+                return tester
+                    .setup.user.addr('082111')
+                    .inputs(
+                        {session_event: "new"},
+                        { content: '1',
+                          provider: 'MTN' }  // state_clinic_type
+                    )
+                    .check(function(api) {
+                        var metrics = api.metrics.stores.usaid_clinicfinder_test;
+                        assert.deepEqual(metrics['sum.clinic_type_select.nearest'].values, [1]);
+                    })
+                    .run();
+            });
+
             describe("if the user uses a provider that provides location " +
             "based search", function() {
                 it("should confirm locating them", function() {
@@ -222,6 +237,22 @@ describe("app", function() {
                 });
 
                 describe("if the user chooses 1. Continue", function() {
+                    it("should increase the sum.database_queries metric", function() {
+                        return tester
+                            .setup.user.addr('082111')
+                            .inputs(
+                                {session_event: "new"},
+                                { content: '1',
+                                  provider: 'MTN' },  // state_clinic_type
+                                '1'  // state_locate_permission
+                            )
+                            .check(function(api) {
+                                var metrics = api.metrics.stores.usaid_clinicfinder_test;
+                                assert.deepEqual(metrics['sum.database_queries.nearest'].values, [1]);
+                            })
+                            .run();
+                    });
+
                     it("should ask about health services opt-in", function() {
                         return tester
                             .setup.user.addr('082111')
