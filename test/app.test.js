@@ -69,7 +69,8 @@ describe("app", function() {
                     lbs_providers: ['VODACOM', 'MTN'],
                     api_url: 'http://127.0.0.1:8000/clinicfinder/',
                     api_key: 'replace_with_token',
-                    clinic_types: ['mmc', 'hct']
+                    clinic_types: ['mmc', 'hct'],
+                    metric_store: 'usaid_clinicfinder_test'
                 })
                 .setup(function(api) {
                     api.contacts.add({
@@ -77,7 +78,9 @@ describe("app", function() {
                         extra: {},
                     });
                 })
-
+                .setup(function(api) {
+                    api.metrics.stores = {'usaid_clinicfinder_test': {}};
+                })
                 .setup(function(api) {
                     fixtures().forEach(api.http.fixtures.add);
                     locations.fixtures.forEach(api.http.fixtures.add);
@@ -85,6 +88,19 @@ describe("app", function() {
         });
 
         describe("when the user starts a session", function() {
+            it("should increase the number of unique users metric", function() {
+                return tester
+                    .setup.user.addr('082111')
+                    .inputs(
+                        {session_event: "new"}
+                    )
+                    .check(function(api) {
+                        var metrics = api.metrics.stores.usaid_clinicfinder_test;
+                        assert.deepEqual(metrics['sum.unique_users'].values, [1]);
+                    })
+                    .run();
+            });
+
             describe("when a welcome screen is not enabled", function() {
                 it("should ask for type of clinic", function() {
                     return tester

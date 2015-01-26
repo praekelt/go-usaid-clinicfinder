@@ -4,6 +4,7 @@ go.app = function() {
     var App = vumigo.App;
     var Choice = vumigo.states.Choice;
     var ChoiceState = vumigo.states.ChoiceState;
+    var MetricsHelper = require('go-jsbox-metrics-helper');
     var EndState = vumigo.states.EndState;
     var JsonApi = vumigo.http.api.JsonApi;
 
@@ -13,6 +14,30 @@ go.app = function() {
         var $ = self.$;
 
         self.init = function() {
+            // Use the metrics helper to add the required metrics
+            mh = new MetricsHelper(self.im);
+            mh
+                // Total unique users
+                .add.total_unique_users('sum.unique_users')
+
+                // Total registrations
+                .add.total_state_actions(
+                    {
+                        state: 'states_language',
+                        action: 'enter'
+                    },
+                    'sum.registrations'
+                )
+
+                // Total opt outs
+                .add.total_state_actions(
+                    {
+                        state: 'states_unsubscribe',
+                        action: 'enter'
+                    },
+                    'sum.optouts'
+                );
+
             // Configure URLs
             self.req_location_url = self.im.config.api_url + 'requestlocation/';
             self.req_lookup_url = self.im.config.api_url + 'requestlookup/';
