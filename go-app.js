@@ -134,11 +134,13 @@ go.app = function() {
         self.fire_clinics_found_metric = function(clinics_found) {
             if (clinics_found === '1') {
                 return self.im.metrics.fire.inc('sum.one_time_users', 1);
-            } else {
+            } else if (clinics_found === '2') {
                 return Q.all([
                     self.im.metrics.fire.inc('sum.multiple_time_users', 1),
                     self.im.metrics.fire.inc('sum.one_time_users', {amount: -1})
                 ]);
+            } else {
+                return Q();
             }
         };
 
