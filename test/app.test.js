@@ -604,7 +604,7 @@ describe("app", function() {
                     .run();
             });
 
-            it("should increase track the service provider metric", function() {
+            it("should track the service provider metric", function() {
                 return tester
                     .setup.user.addr('082111')
                     .inputs(
@@ -622,6 +622,28 @@ describe("app", function() {
                         var metrics = api.metrics.stores.usaid_clinicfinder_test;
                         assert.deepEqual(metrics['sum.service_provider.mtn'].values, [1]);
                         assert.deepEqual(metrics['sum.service_provider.other'].values, [1]);
+                    })
+                    .run();
+            });
+
+            it("should track the locate type metric", function() {
+                return tester
+                    .setup.user.addr('082111')
+                    .inputs(
+                        {session_event: "new"},
+                        { content: '1',
+                          provider: 'MTN' },  // state_clinic_type
+                        '1',  // state_locate_permission
+                        '2',  // state_health_services
+                        {session_event: "new"},
+                        { content: '2',
+                          provider: 'CellC' },  // state_clinic_type
+                        'Friend Street'  // state_suburb
+                    )
+                    .check(function(api) {
+                        var metrics = api.metrics.stores.usaid_clinicfinder_test;
+                        assert.deepEqual(metrics['sum.locate_type.suburb'].values, [1]);
+                        assert.deepEqual(metrics['sum.locate_type.lbs'].values, [1]);
                     })
                     .run();
             });
