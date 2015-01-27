@@ -136,6 +136,8 @@ go.app = function() {
             ]);
         };
 
+
+        // METRIC HELPERS
         self.fire_clinic_type_metric = function(clinic_type_requested) {
             return self.im.metrics.fire.inc(
                 ['sum.clinic_type_select', clinic_type_requested].join('.'), 1);
@@ -145,6 +147,17 @@ go.app = function() {
             var clinic_type_requested = self.im.user.answers.state_clinic_type;
             return self.im.metrics.fire.inc(
                 ['sum.database_queries', clinic_type_requested].join('.'), 1);
+        };
+
+        self.fire_clinics_found_metric = function(clinics_found) {
+            if (clinics_found === '1') {
+                return self.im.metrics.fire.inc('sum.one_time_users', 1);
+            } else {
+                return Q.all([
+                    self.im.metrics.fire.inc('sum.multiple_time_users', 1),
+                    self.im.metrics.fire.inc('sum.one_time_users', {amount: -1})
+                ]);
+            }
         };
 
 
@@ -236,6 +249,7 @@ go.app = function() {
                 ],
 
                 next: function(choice) {
+
                     switch (choice.value) {
                         case 'locate': return 'state_lbs_locate';
                         case 'no_locate': return 'state_reprompt_permission';
@@ -271,7 +285,7 @@ go.app = function() {
             return self
                 .lbs_locate(self.contact)
                 .then(function() {
-                    return self.states.create('state_health_services');
+                    return self.states.create('state_health_services_enter');
                 });
         });
 
@@ -306,8 +320,28 @@ go.app = function() {
                     return self
                         .manual_locate(self.contact)
                         .then(function() {
-                            return self.states.create('state_health_services');
+                            return self.states.create(
+                                'state_health_services_enter');
                         });
+                });
+        });
+
+        self.states.add('state_health_services_enter', function(name) {
+            if (self.contact.extra.clinics_found === undefined) {
+                self.contact.extra.clinics_found = "1";
+            } else {
+                self.contact.extra.clinics_found = (parseInt(
+                    self.contact.extra.clinics_found, 10) + 1).toString();
+            }
+
+            return Q
+                .all([
+                    self.im.contacts.save(self.contact),
+                    self.fire_clinics_found_metric(
+                        self.contact.extra.clinics_found)
+                ])
+                .then(function() {
+                    return self.states.create('state_health_services');
                 });
         });
 
