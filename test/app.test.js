@@ -580,7 +580,7 @@ describe("app", function() {
             });
         });
 
-        describe("if the user finds multiple clinics", function() {
+        describe("if the user two finds clinics", function() {
             it("should increase the sum.multiple_times_users metric " +
                "and decrease the sum.one_time_users metric", function() {
                 return tester
@@ -649,6 +649,36 @@ describe("app", function() {
             });
         });
 
+        describe("if the user finds three clinics", function() {
+            it("should increase the sum.multiple_times_users metric " +
+               "and decrease the sum.one_time_users metric", function() {
+                return tester
+                    .setup.user.addr('082111')
+                    .inputs(
+                        {session_event: "new"},
+                        { content: '1',
+                          provider: 'MTN' },  // state_clinic_type
+                        '1',  // state_locate_permission
+                        '2',  // state_health_services
+                        {session_event: "new"},
+                        { content: '2',
+                          provider: 'CellC' },  // state_clinic_type
+                        'Friend Street',  // state_suburb
+                        '2',  // state_health_services
+                        {session_event: "new"},
+                        { content: '2',
+                          provider: 'CellC' },  // state_clinic_type
+                        'Quad Street',  // state_suburb
+                        '3'  // state_suburb
+                    )
+                    .check(function(api) {
+                        var metrics = api.metrics.stores.usaid_clinicfinder_test;
+                        assert.deepEqual(metrics['sum.multiple_time_users'].values, [1]);
+                        assert.deepEqual(metrics['sum.one_time_users'].values, [1, 0]);
+                    })
+                    .run();
+            });
+        });
 
     });
 });
