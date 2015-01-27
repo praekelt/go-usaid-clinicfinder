@@ -99,7 +99,7 @@ go.app = function() {
         self.manual_locate = function(contact) {
             return Q.all([
                 self.fire_database_query_metric(),
-                self.fire_locate_type('suburb'),
+                self.fire_locate_type_metric('suburb'),
                 self.http.post(self.req_lookup_url, {
                     data: self.make_lookup_data(contact,
                         self.make_location_data(contact))
@@ -110,7 +110,7 @@ go.app = function() {
         self.lbs_locate = function(contact) {
             return Q.all([
                 self.fire_database_query_metric(),
-                self.fire_locate_type('lbs'),
+                self.fire_locate_type_metric('lbs'),
                 self.http.post(self.lbsrequest_url, {
                     data: self.make_lbs_data(contact,
                         self.make_lookup_data(contact, null))
@@ -147,7 +147,7 @@ go.app = function() {
                 ['sum.service_provider', provider.toLowerCase()].join('.'), 1);
         };
 
-        self.fire_locate_type = function(type) {
+        self.fire_locate_type_metric = function(type) {
             return self.im.metrics.fire.inc(
                 ['sum.locate_type', type].join('.'), 1);
         };
