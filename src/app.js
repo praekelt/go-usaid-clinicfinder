@@ -17,27 +17,7 @@ go.app = function() {
         self.init = function() {
             // Use the metrics helper to add the required metrics
             mh = new MetricsHelper(self.im);
-            mh
-                // Total unique users
-                .add.total_unique_users('sum.unique_users')
-
-                // Total registrations
-                .add.total_state_actions(
-                    {
-                        state: 'states_language',
-                        action: 'enter'
-                    },
-                    'sum.registrations'
-                )
-
-                // Total opt outs
-                .add.total_state_actions(
-                    {
-                        state: 'states_unsubscribe',
-                        action: 'enter'
-                    },
-                    'sum.optouts'
-                );
+            mh.add.total_unique_users('sum.unique_users');
 
             // Configure URLs
             self.req_location_url = self.im.config.api_url + 'requestlocation/';
