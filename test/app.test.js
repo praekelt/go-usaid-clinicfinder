@@ -69,7 +69,8 @@ describe("app", function() {
                     lbs_providers: ['VODACOM', 'MTN'],
                     api_url: 'http://127.0.0.1:8000/clinicfinder/',
                     api_key: 'replace_with_token',
-                    clinic_types: ['mmc', 'hct']
+                    clinic_types: ['mmc', 'hct'],
+                    metric_store: 'usaid_clinicfinder_test'
                 })
                 .setup(function(api) {
                     api.contacts.add({
@@ -77,7 +78,9 @@ describe("app", function() {
                         extra: {},
                     });
                 })
-
+                .setup(function(api) {
+                    api.metrics.stores = {'usaid_clinicfinder_test': {}};
+                })
                 .setup(function(api) {
                     fixtures().forEach(api.http.fixtures.add);
                     locations.fixtures.forEach(api.http.fixtures.add);
@@ -85,6 +88,19 @@ describe("app", function() {
         });
 
         describe("when the user starts a session", function() {
+            it("should increase the number of unique users metric", function() {
+                return tester
+                    .setup.user.addr('082111')
+                    .inputs(
+                        {session_event: "new"}
+                    )
+                    .check(function(api) {
+                        var metrics = api.metrics.stores.usaid_clinicfinder_test;
+                        assert.deepEqual(metrics['sum.unique_users'].values, [1]);
+                    })
+                    .run();
+            });
+
             describe("when a welcome screen is not enabled", function() {
                 it("should ask for type of clinic", function() {
                     return tester
@@ -182,6 +198,21 @@ describe("app", function() {
         });
 
         describe("when the user selects a clinic type", function() {
+            it("should incr the clinic_type metric", function() {
+                return tester
+                    .setup.user.addr('082111')
+                    .inputs(
+                        {session_event: "new"},
+                        { content: '1',
+                          provider: 'MTN' }  // state_clinic_type
+                    )
+                    .check(function(api) {
+                        var metrics = api.metrics.stores.usaid_clinicfinder_test;
+                        assert.deepEqual(metrics['sum.clinic_type_select.nearest'].values, [1]);
+                    })
+                    .run();
+            });
+
             describe("if the user uses a provider that provides location " +
             "based search", function() {
                 it("should confirm locating them", function() {
@@ -206,6 +237,22 @@ describe("app", function() {
                 });
 
                 describe("if the user chooses 1. Continue", function() {
+                    it("should increase the sum.database_queries metric", function() {
+                        return tester
+                            .setup.user.addr('082111')
+                            .inputs(
+                                {session_event: "new"},
+                                { content: '1',
+                                  provider: 'MTN' },  // state_clinic_type
+                                '1'  // state_locate_permission
+                            )
+                            .check(function(api) {
+                                var metrics = api.metrics.stores.usaid_clinicfinder_test;
+                                assert.deepEqual(metrics['sum.database_queries.nearest'].values, [1]);
+                            })
+                            .run();
+                    });
+
                     it("should ask about health services opt-in", function() {
                         return tester
                             .setup.user.addr('082111')
@@ -511,6 +558,124 @@ describe("app", function() {
                         assert.equal(contact.extra.health_services, 'male');
                     })
                     .check.reply.ends_session()
+                    .run();
+            });
+        });
+
+        describe("if the user finds one clinic", function() {
+            it("should increase the sum.one_time_users metric", function() {
+                return tester
+                    .setup.user.addr('082111')
+                    .inputs(
+                        {session_event: "new"},
+                        { content: '1',
+                          provider: 'MTN' },  // state_clinic_type
+                        '1'  // state_locate_permission
+                    )
+                    .check(function(api) {
+                        var metrics = api.metrics.stores.usaid_clinicfinder_test;
+                        assert.deepEqual(metrics['sum.one_time_users'].values, [1]);
+                    })
+                    .run();
+            });
+        });
+
+        describe("if the user two finds clinics", function() {
+            it("should increase the sum.multiple_times_users metric " +
+               "and decrease the sum.one_time_users metric", function() {
+                return tester
+                    .setup.user.addr('082111')
+                    .inputs(
+                        {session_event: "new"},
+                        { content: '1',
+                          provider: 'MTN' },  // state_clinic_type
+                        '1',  // state_locate_permission
+                        '2',  // state_health_services
+                        {session_event: "new"},
+                        { content: '2',
+                          provider: 'CellC' },  // state_clinic_type
+                        'Friend Street'  // state_suburb
+                    )
+                    .check(function(api) {
+                        var metrics = api.metrics.stores.usaid_clinicfinder_test;
+                        assert.deepEqual(metrics['sum.multiple_time_users'].values, [1]);
+                        assert.deepEqual(metrics['sum.one_time_users'].values, [1, 0]);
+                    })
+                    .run();
+            });
+
+            it("should track the service provider metric", function() {
+                return tester
+                    .setup.user.addr('082111')
+                    .inputs(
+                        {session_event: "new"},
+                        { content: '1',
+                          provider: 'MTN' },  // state_clinic_type
+                        '1',  // state_locate_permission
+                        '2',  // state_health_services
+                        {session_event: "new"},
+                        { content: '2',
+                          provider: 'CellC' },  // state_clinic_type
+                        'Friend Street'  // state_suburb
+                    )
+                    .check(function(api) {
+                        var metrics = api.metrics.stores.usaid_clinicfinder_test;
+                        assert.deepEqual(metrics['sum.service_provider.mtn'].values, [1]);
+                        assert.deepEqual(metrics['sum.service_provider.other'].values, [1]);
+                    })
+                    .run();
+            });
+
+            it("should track the locate type metric", function() {
+                return tester
+                    .setup.user.addr('082111')
+                    .inputs(
+                        {session_event: "new"},
+                        { content: '1',
+                          provider: 'MTN' },  // state_clinic_type
+                        '1',  // state_locate_permission
+                        '2',  // state_health_services
+                        {session_event: "new"},
+                        { content: '2',
+                          provider: 'CellC' },  // state_clinic_type
+                        'Friend Street'  // state_suburb
+                    )
+                    .check(function(api) {
+                        var metrics = api.metrics.stores.usaid_clinicfinder_test;
+                        assert.deepEqual(metrics['sum.locate_type.suburb'].values, [1]);
+                        assert.deepEqual(metrics['sum.locate_type.lbs'].values, [1]);
+                    })
+                    .run();
+            });
+        });
+
+        describe("if the user finds three clinics", function() {
+            it("should increase the sum.multiple_times_users metric " +
+               "and decrease the sum.one_time_users metric", function() {
+                return tester
+                    .setup.user.addr('082111')
+                    .inputs(
+                        {session_event: "new"},
+                        { content: '1',
+                          provider: 'MTN' },  // state_clinic_type
+                        '1',  // state_locate_permission
+                        '2',  // state_health_services
+                        {session_event: "new"},
+                        { content: '2',
+                          provider: 'CellC' },  // state_clinic_type
+                        'Friend Street',  // state_suburb
+                        '2',  // state_health_services
+                        {session_event: "new"},
+                        { content: '2',
+                          provider: 'CellC' },  // state_clinic_type
+                        'Quad Street',  // state_suburb
+                        '3'  // state_suburb
+                    )
+                    .check(function(api) {
+                        var metrics = api.metrics.stores.usaid_clinicfinder_test;
+                        assert.deepEqual(metrics['sum.multiple_time_users'].values, [1]);
+                        assert.deepEqual(metrics['sum.one_time_users'].values, [1, 0]);
+                    })
                     .run();
             });
         });

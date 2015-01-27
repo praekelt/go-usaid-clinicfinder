@@ -4,6 +4,8 @@ go.app = function() {
     var App = vumigo.App;
     var Choice = vumigo.states.Choice;
     var ChoiceState = vumigo.states.ChoiceState;
+    var MetricsHelper = require('go-jsbox-metrics-helper');
+    var Q = require('q');
     var EndState = vumigo.states.EndState;
     var JsonApi = vumigo.http.api.JsonApi;
 
@@ -13,6 +15,10 @@ go.app = function() {
         var $ = self.$;
 
         self.init = function() {
+            // Use the metrics helper to add the required metrics
+            mh = new MetricsHelper(self.im);
+            mh.add.total_unique_users('sum.unique_users');
+
             // Configure URLs
             self.req_location_url = self.im.config.api_url + 'requestlocation/';
             self.req_lookup_url = self.im.config.api_url + 'requestlookup/';
@@ -84,19 +90,61 @@ go.app = function() {
         };
 
         self.manual_locate = function(contact) {
-            return self.http
-                .post(self.req_lookup_url, {
+            return Q.all([
+                self.fire_database_query_metric(),
+                self.fire_locate_type_metric('suburb'),
+                self.http.post(self.req_lookup_url, {
                     data: self.make_lookup_data(contact,
                         self.make_location_data(contact))
-                });
+                })
+            ]);
         };
 
         self.lbs_locate = function(contact) {
-            return self.http
-                .post(self.lbsrequest_url, {
+            return Q.all([
+                self.fire_database_query_metric(),
+                self.fire_locate_type_metric('lbs'),
+                self.http.post(self.lbsrequest_url, {
                     data: self.make_lbs_data(contact,
                         self.make_lookup_data(contact, null))
-                });
+                })
+            ]);
+        };
+
+
+        // METRIC HELPERS
+        self.fire_clinic_type_metric = function(clinic_type_requested) {
+            return self.im.metrics.fire.inc(
+                ['sum.clinic_type_select', clinic_type_requested].join('.'), 1);
+        };
+
+        self.fire_database_query_metric = function() {
+            var clinic_type_requested = self.im.user.answers.state_clinic_type;
+            return self.im.metrics.fire.inc(
+                ['sum.database_queries', clinic_type_requested].join('.'), 1);
+        };
+
+        self.fire_clinics_found_metric = function(clinics_found) {
+            if (clinics_found === '1') {
+                return self.im.metrics.fire.inc('sum.one_time_users', 1);
+            } else if (clinics_found === '2') {
+                return Q.all([
+                    self.im.metrics.fire.inc('sum.multiple_time_users', 1),
+                    self.im.metrics.fire.inc('sum.one_time_users', {amount: -1})
+                ]);
+            } else {
+                return Q();
+            }
+        };
+
+        self.fire_provider_metric = function(provider) {
+            return self.im.metrics.fire.inc(
+                ['sum.service_provider', provider.toLowerCase()].join('.'), 1);
+        };
+
+        self.fire_locate_type_metric = function(type) {
+            return self.im.metrics.fire.inc(
+                ['sum.locate_type', type].join('.'), 1);
         };
 
 
@@ -152,19 +200,35 @@ go.app = function() {
                     new Choice('hct', $("HCT Clinic"))
                 ],
 
-                next: function() {
-                    if (typeof self.im.msg.provider !== 'undefined' && self.im.msg.provider !== null) {
-                        var service_provider = self.im.msg.provider.trim().toUpperCase();
-                        if (self.im.config.lbs_providers.indexOf(service_provider) !== -1) {
-                            return 'state_locate_permission';
-                        } else {
-                            return 'state_suburb';
-                        }
-                    } else {
-                        // For transports that don't provide provider info
-                        return 'state_suburb';
-                    }
+                next: function(choice) {
+                    return self
+                        .fire_clinic_type_metric(choice.value)
+                        .then(function() {
+                            if (typeof self.im.msg.provider !== 'undefined' && self.im.msg.provider !== null) {
+                                var service_provider = self.im.msg.provider.trim().toUpperCase();
+                                if (self.im.config.lbs_providers.indexOf(service_provider) !== -1) {
+                                    return self
+                                        .fire_provider_metric(service_provider)
+                                        .then(function() {
+                                            return 'state_locate_permission';
+                                        });
+                                } else {
+                                    return self
+                                        .fire_provider_metric('Other')
+                                        .then(function() {
+                                            return 'state_suburb';
+                                        });
+                                }
+                            } else {
+                                // For transports that don't provide provider info
+                                return self
+                                    .fire_provider_metric('Other')
+                                    .then(function() {
+                                        return 'state_suburb';
+                                    });
+                            }
 
+                        });
                 }
             });
         });
@@ -182,6 +246,7 @@ go.app = function() {
                 ],
 
                 next: function(choice) {
+
                     switch (choice.value) {
                         case 'locate': return 'state_lbs_locate';
                         case 'no_locate': return 'state_reprompt_permission';
@@ -217,7 +282,7 @@ go.app = function() {
             return self
                 .lbs_locate(self.contact)
                 .then(function() {
-                    return self.states.create('state_health_services');
+                    return self.states.create('state_health_services_enter');
                 });
         });
 
@@ -252,8 +317,28 @@ go.app = function() {
                     return self
                         .manual_locate(self.contact)
                         .then(function() {
-                            return self.states.create('state_health_services');
+                            return self.states.create(
+                                'state_health_services_enter');
                         });
+                });
+        });
+
+        self.states.add('state_health_services_enter', function(name) {
+            if (self.contact.extra.clinics_found === undefined) {
+                self.contact.extra.clinics_found = "1";
+            } else {
+                self.contact.extra.clinics_found = (parseInt(
+                    self.contact.extra.clinics_found, 10) + 1).toString();
+            }
+
+            return Q
+                .all([
+                    self.im.contacts.save(self.contact),
+                    self.fire_clinics_found_metric(
+                        self.contact.extra.clinics_found)
+                ])
+                .then(function() {
+                    return self.states.create('state_health_services');
                 });
         });
 
