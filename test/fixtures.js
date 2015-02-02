@@ -11,7 +11,7 @@ module.exports = function() {
                "response": {
                   "type": "SMS",
                   "to_addr": "+082111",
-                  "template": "Your nearest clinic is {{ results }}. Thanks for using Clinic Finder"
+                  "template": "Your nearest clinic is {{ results }}. Thanks for using Healthsites"
                },
                "location": {
                   "point": {
@@ -31,7 +31,7 @@ module.exports = function() {
                "response": {
                   "type": "SMS",
                   "to_addr": "+082111",
-                  "template": "Your nearest clinic is {{ results }}. Thanks for using Clinic Finder"
+                  "template": "Your nearest clinic is {{ results }}. Thanks for using Healthsites"
                },
                "location": {
                   "id": 1,
@@ -56,7 +56,7 @@ module.exports = function() {
                "response": {
                   "type": "SMS",
                   "to_addr": "+082111",
-                  "template": "Your nearest clinic is {{ results }}. Thanks for using Clinic Finder"
+                  "template": "Your nearest clinic is {{ results }}. Thanks for using Healthsites"
                },
                "location": {
                   "point": {
@@ -76,7 +76,7 @@ module.exports = function() {
                "response": {
                   "type": "SMS",
                   "to_addr": "+082111",
-                  "template": "Your nearest clinic is {{ results }}. Thanks for using Clinic Finder"
+                  "template": "Your nearest clinic is {{ results }}. Thanks for using Healthsites"
                },
                "location": {
                   "id": 2,
@@ -106,7 +106,7 @@ module.exports = function() {
                   "response": {
                      "type": "SMS",
                      "to_addr": "+082111",
-                     "template": "Your nearest clinic is {{ results }}. Thanks for using Clinic Finder"
+                     "template": "Your nearest clinic is {{ results }}. Thanks for using Healthsites"
                   },
                   "location": null
                }
@@ -128,7 +128,7 @@ module.exports = function() {
                   "response": {
                      "type": "SMS",
                      "to_addr": "+082111",
-                     "template": "Your nearest clinic is {{ results }}. Thanks for using Clinic Finder"
+                     "template": "Your nearest clinic is {{ results }}. Thanks for using Healthsites"
                   },
                   "location": null
                }

@@ -72,7 +72,7 @@ go.app = function() {
                     type: "SMS",
                     to_addr: contact.msisdn,
                     template: "Your nearest clinic is {{ results }}. Thanks " +
-                              "for using Clinic Finder"
+                              "for using Healthsites"
                 },
                 location: location
             };
@@ -191,7 +191,7 @@ go.app = function() {
         self.states.add('state_clinic_type', function(name) {
             return new ChoiceState(name, {
                 question:
-                    $("Welcome to Clinic Finder. What type of clinic " +
+                    $("Welcome to Healthsites. What type of clinic " +
                       "are you looking for?"),
 
                 choices: [
@@ -371,7 +371,7 @@ go.app = function() {
         self.states.add('state_thanks', function(name) {
             return new EndState(name, {
                 text:
-                    $("Thanks for using the Clinic Finder " +
+                    $("Thanks for using the Healthsites " +
                       "Service. Opt out at any stage by " +
                       "SMSing 'STOP' in reply to your " +
                       "clinic info message."),
@@ -383,7 +383,7 @@ go.app = function() {
         self.states.add('state_quit', function(name) {
             return new EndState(name, {
                 text:
-                    $("Thanks for using Clinic Finder. For info on " +
+                    $("Thanks for using Healthsites. For info on " +
                       "MMC visit brothersforlife.org. For info on " +
                       "HCT visit zazi.org.za. Find a clinic on the " +
                       "web visit healthsites.org.za"),

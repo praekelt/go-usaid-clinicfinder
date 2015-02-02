@@ -111,7 +111,7 @@ describe("app", function() {
                         .check.interaction({
                             state: 'state_clinic_type',
                             reply: [
-                                "Welcome to Clinic Finder. What type of " +
+                                "Welcome to Healthsites. What type of " +
                                 "clinic are you looking for?",
                                 "1. Nearest Clinic",
                                 "2. MMC Clinic",
@@ -161,7 +161,7 @@ describe("app", function() {
                         .check.interaction({
                             state: 'state_clinic_type',
                             reply: [
-                                "Welcome to Clinic Finder. What type of " +
+                                "Welcome to Healthsites. What type of " +
                                 "clinic are you looking for?",
                                 "1. Nearest Clinic",
                                 "2. MMC Clinic",
@@ -368,7 +368,7 @@ describe("app", function() {
                             .check.interaction({
                                 state: 'state_quit',
                                 reply:
-                                    "Thanks for using Clinic Finder. For info on " +
+                                    "Thanks for using Healthsites. For info on " +
                                     "MMC visit brothersforlife.org. For info on " +
                                     "HCT visit zazi.org.za. Find a clinic on the " +
                                     "web visit healthsites.org.za"
@@ -546,7 +546,7 @@ describe("app", function() {
                     .check.interaction({
                         state: 'state_thanks',
                         reply:
-                            "Thanks for using the Clinic Finder " +
+                            "Thanks for using the Healthsites " +
                             "Service. Opt out at any stage by " +
                             "SMSing 'STOP' in reply to your " +
                             "clinic info message."
