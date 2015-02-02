@@ -42,15 +42,15 @@
             "width": 6,
             "metrics": [
                 {
-                    "name": "Found One Clinic Users",
+                    "name": "New Users",
                     "target": {
                         "metric_type": "account",
                         "store": "usaid_clinicfinder_qa",
-                        "name": "sum.one_time_users",
+                        "name": "sum.unique_users",
                         "aggregator": "last"
                         }
                 },{
-                    "name": "Found Multiple Clinics Users",
+                    "name": "Returning Users",
                     "target": {
                         "metric_type": "account",
                         "store": "usaid_clinicfinder_qa",
