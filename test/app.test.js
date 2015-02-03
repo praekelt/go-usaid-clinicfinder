@@ -70,7 +70,9 @@ describe("app", function() {
                     api_url: 'http://127.0.0.1:8000/clinicfinder/',
                     api_key: 'replace_with_token',
                     clinic_types: ['mmc', 'hct'],
-                    metric_store: 'usaid_clinicfinder_test'
+                    metric_store: 'usaid_clinicfinder_test',
+                    template: "Your nearest clinics are: {{ results }}. " +
+                              "Thanks for using Healthsites."
                 })
                 .setup(function(api) {
                     api.contacts.add({
