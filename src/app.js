@@ -71,8 +71,7 @@ go.app = function() {
                 response: {
                     type: "SMS",
                     to_addr: contact.msisdn,
-                    template: "Your nearest clinics are: {{ results }}. " +
-                              "Thanks for using Healthsites."
+                    template: self.im.config.template
                 },
                 location: location
             };
