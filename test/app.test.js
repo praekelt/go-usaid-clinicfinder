@@ -267,12 +267,12 @@ describe("app", function() {
                             .check.interaction({
                                 state: 'state_health_services',
                                 reply: [
-                                    "You will get an SMS with the clinic " +
-                                    "info shortly. Want to hear about the " +
-                                    "latest health services & info? T&Cs " +
-                                    "www.zazi.org.za",
-                                    "1. For female",
-                                    "2. For males",
+                                    "You will get an SMS with the clinic info " +
+                                    "shortly. Want to hear about the latest " +
+                                    "health services & info? T&Cs " +
+                                    "www.brothersforlife.org",
+                                    "1. Female",
+                                    "2. Males",
                                     "3. No"
                                 ].join("\n")
                             })
@@ -321,12 +321,12 @@ describe("app", function() {
                             .check.interaction({
                                 state: 'state_health_services',
                                 reply: [
-                                    "You will get an SMS with the clinic " +
-                                    "info shortly. Want to hear about the " +
-                                    "latest health services & info? T&Cs " +
-                                    "www.zazi.org.za",
-                                    "1. For female",
-                                    "2. For males",
+                                    "You will get an SMS with the clinic info " +
+                                    "shortly. Want to hear about the latest " +
+                                    "health services & info? T&Cs " +
+                                    "www.brothersforlife.org",
+                                    "1. Female",
+                                    "2. Males",
                                     "3. No"
                                 ].join("\n")
                             })
@@ -437,12 +437,12 @@ describe("app", function() {
                                 .check.interaction({
                                     state: 'state_health_services',
                                     reply: [
-                                        "You will get an SMS with the clinic " +
-                                        "info shortly. Want to hear about the " +
-                                        "latest health services & info? T&Cs " +
-                                        "www.zazi.org.za",
-                                        "1. For female",
-                                        "2. For males",
+                                        "You will get an SMS with the clinic info " +
+                                        "shortly. Want to hear about the latest " +
+                                        "health services & info? T&Cs " +
+                                        "www.brothersforlife.org",
+                                        "1. Female",
+                                        "2. Males",
                                         "3. No"
                                     ].join("\n")
                                 })
