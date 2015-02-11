@@ -9,14 +9,14 @@ module.exports = function() {
                   "mmc": "true"
                },
                "response": {
-                  "template_type": "SMS",
+                  "type": "SMS",
                   "to_addr": "+082111",
-                  "template": "Your nearest clinic is {{ results }}. Thanks for using Clinic Finder"
+                  "template": "Your nearest clinics are: {{ results }}. Thanks for using Healthsites."
                },
                "location": {
                   "point": {
                      "type": "Point",
-                     "coordinates": ["3.3", "3.33"]
+                     "coordinates": [3.3, 3.33]
                   }
                }
             }
@@ -29,15 +29,15 @@ module.exports = function() {
                   "mmc": "true"
                },
                "response": {
-                  "template_type": "SMS",
+                  "type": "SMS",
                   "to_addr": "+082111",
-                  "template": "Your nearest clinic is {{ results }}. Thanks for using Clinic Finder"
+                  "template": "Your nearest clinics are: {{ results }}. Thanks for using Healthsites."
                },
                "location": {
                   "id": 1,
                   "point": {
                      "type": "Point",
-                     "coordinates": ["3.3", "3.33"]
+                     "coordinates": [3.3, 3.33]
                   }
                }
             }
@@ -54,14 +54,14 @@ module.exports = function() {
                   "mmc": "true"
                },
                "response": {
-                  "template_type": "SMS",
+                  "type": "SMS",
                   "to_addr": "+082111",
-                  "template": "Your nearest clinic is {{ results }}. Thanks for using Clinic Finder"
+                  "template": "Your nearest clinics are: {{ results }}. Thanks for using Healthsites."
                },
                "location": {
                   "point": {
                      "type": "Point",
-                     "coordinates": ["3.1415", "2.7182"]
+                     "coordinates": [3.1415, 2.7182]
                   }
                }
             }
@@ -74,15 +74,15 @@ module.exports = function() {
                   "mmc": "true"
                },
                "response": {
-                  "template_type": "SMS",
+                  "type": "SMS",
                   "to_addr": "+082111",
-                  "template": "Your nearest clinic is {{ results }}. Thanks for using Clinic Finder"
+                  "template": "Your nearest clinics are: {{ results }}. Thanks for using Healthsites."
                },
                "location": {
                   "id": 2,
                   "point": {
                      "type": "Point",
-                     "coordinates": ["3.1415", "2.7182"]
+                     "coordinates": [3.1415, 2.7182]
                   }
                }
             }
@@ -104,9 +104,9 @@ module.exports = function() {
                      "hct": "true"
                   },
                   "response": {
-                     "template_type": "SMS",
+                     "type": "SMS",
                      "to_addr": "+082111",
-                     "template": "Your nearest clinic is {{ results }}. Thanks for using Clinic Finder"
+                     "template": "Your nearest clinics are: {{ results }}. Thanks for using Healthsites."
                   },
                   "location": null
                }
@@ -126,9 +126,9 @@ module.exports = function() {
                      "hct": "true"
                   },
                   "response": {
-                     "template_type": "SMS",
+                     "type": "SMS",
                      "to_addr": "+082111",
-                     "template": "Your nearest clinic is {{ results }}. Thanks for using Clinic Finder"
+                     "template": "Your nearest clinics are: {{ results }}. Thanks for using Healthsites."
                   },
                   "location": null
                }
