@@ -1,0 +1,309 @@
+{
+    "layout": [
+        {
+            "type": "diamondash.widgets.lvalue.LValueWidget",
+            "time_range": "30d",
+            "name": "Total Unique Users",
+            "target": {
+                "metric_type": "account",
+                "store": "usaid_clinicfinder_prd",
+                "name": "sum.unique_users",
+                "aggregator": "last"
+                }
+        },
+
+        {
+            "type": "diamondash.widgets.graph.GraphWidget",
+            "name": "Unique Users Per Week",
+            "time_range": "112d",
+            "bucket_size": "7d",
+            "width": 6,
+            "metrics": [
+                {
+                    "name": "Unique Users",
+                    "target": {
+                        "metric_type": "account",
+                        "store": "usaid_clinicfinder_prd",
+                        "name": "sum.unique_users",
+                        "aggregator": "last"
+                    }
+                }
+            ]
+        },
+
+
+        "new_row",
+
+        {
+            "type": "diamondash.widgets.graph.GraphWidget",
+            "name": "New vs Returning Users",
+            "time_range": "365d",
+            "bucket_size": "1d",
+            "width": 6,
+            "metrics": [
+                {
+                    "name": "New Users",
+                    "target": {
+                        "metric_type": "account",
+                        "store": "usaid_clinicfinder_prd",
+                        "name": "sum.unique_users",
+                        "aggregator": "last"
+                        }
+                },{
+                    "name": "Returning Users",
+                    "target": {
+                        "metric_type": "account",
+                        "store": "usaid_clinicfinder_prd",
+                        "name": "sum.multiple_time_users",
+                        "aggregator": "last"
+                        }
+                }
+            ]
+        },
+
+
+        "new_row",
+
+        {
+            "type": "diamondash.widgets.lvalue.LValueWidget",
+            "time_range": "7d",
+            "name": "Total SMSs Sent",
+            "target": {
+                "metric_type": "conversation",
+                "name": "messages_sent"
+            }
+        },
+
+        {
+            "type": "diamondash.widgets.graph.GraphWidget",
+            "name": "Total SMSs Sent Per Week",
+            "time_range": "112d",
+            "bucket_size": "7d",
+            "width": 6,
+            "metrics": [
+                {
+                    "name": "Total SMSs Sent",
+                    "target": {
+                        "metric_type": "conversation",
+                        "name": "messages_sent"
+                    }
+                }
+            ]
+        },
+
+
+        "new_row",
+
+        {
+            "type": "diamondash.widgets.graph.GraphWidget",
+            "name": "Database Queries & Clinic Type Selections",
+            "time_range": "365d",
+            "bucket_size": "1d",
+            "width": 6,
+            "metrics": [
+                {
+                    "name": "MMC DB Queries",
+                    "target": {
+                        "metric_type": "account",
+                        "store": "usaid_clinicfinder_prd",
+                        "name": "sum.database_queries.mmc",
+                        "aggregator": "last"
+                        }
+                },{
+                    "name": "HCT DB Queries",
+                    "target": {
+                        "metric_type": "account",
+                        "store": "usaid_clinicfinder_prd",
+                        "name": "sum.database_queries.hct",
+                        "aggregator": "last"
+                        }
+                },{
+                    "name": "All DB Queries",
+                    "target": {
+                        "metric_type": "account",
+                        "store": "usaid_clinicfinder_prd",
+                        "name": "sum.database_queries.nearest",
+                        "aggregator": "last"
+                        }
+                },{
+                    "name": "MMC Clinic Type Selects",
+                    "target": {
+                        "metric_type": "account",
+                        "store": "usaid_clinicfinder_prd",
+                        "name": "sum.clinic_type_selects.mmc",
+                        "aggregator": "last"
+                        }
+                },{
+                    "name": "HCT Clinic Type Selects",
+                    "target": {
+                        "metric_type": "account",
+                        "store": "usaid_clinicfinder_prd",
+                        "name": "sum.clinic_type_selects.hct",
+                        "aggregator": "last"
+                        }
+                },{
+                    "name": "All Clinic Type Selects",
+                    "target": {
+                        "metric_type": "account",
+                        "store": "usaid_clinicfinder_prd",
+                        "name": "sum.clinic_type_selects.nearest",
+                        "aggregator": "last"
+                        }
+                }
+            ]
+        },
+
+        {
+            "type": "diamondash.widgets.graph.GraphWidget",
+            "name": "Database Queries & Clinic Type Selections Per Week",
+            "time_range": "112d",
+            "bucket_size": "7d",
+            "width": 6,
+            "metrics": [
+                {
+                    "name": "MMC DB Queries",
+                    "target": {
+                        "metric_type": "account",
+                        "store": "usaid_clinicfinder_prd",
+                        "name": "sum.database_queries.mmc",
+                        "aggregator": "last"
+                        }
+                },{
+                    "name": "HCT DB Queries",
+                    "target": {
+                        "metric_type": "account",
+                        "store": "usaid_clinicfinder_prd",
+                        "name": "sum.database_queries.hct",
+                        "aggregator": "last"
+                        }
+                },{
+                    "name": "All DB Queries",
+                    "target": {
+                        "metric_type": "account",
+                        "store": "usaid_clinicfinder_prd",
+                        "name": "sum.database_queries.nearest",
+                        "aggregator": "last"
+                        }
+                },{
+                    "name": "MMC Clinic Type Selects",
+                    "target": {
+                        "metric_type": "account",
+                        "store": "usaid_clinicfinder_prd",
+                        "name": "sum.clinic_type_selects.mmc",
+                        "aggregator": "last"
+                        }
+                },{
+                    "name": "HCT Clinic Type Selects",
+                    "target": {
+                        "metric_type": "account",
+                        "store": "usaid_clinicfinder_prd",
+                        "name": "sum.clinic_type_selects.hct",
+                        "aggregator": "last"
+                        }
+                },{
+                    "name": "All Clinic Type Selects",
+                    "target": {
+                        "metric_type": "account",
+                        "store": "usaid_clinicfinder_prd",
+                        "name": "sum.clinic_type_selects.nearest",
+                        "aggregator": "last"
+                        }
+                }
+            ]
+        },
+
+
+        "new_row",
+
+        {
+            "type": "diamondash.widgets.graph.GraphWidget",
+            "name": "Unique Users by MNO",
+            "time_range": "365d",
+            "bucket_size": "1d",
+            "width": 6,
+            "metrics": [
+                {
+                    "name": "Vodacom",
+                    "target": {
+                        "metric_type": "account",
+                        "store": "usaid_clinicfinder_prd",
+                        "name": "sum.service_provider.vodacom",
+                        "aggregator": "last"
+                        }
+                },{
+                    "name": "MTN",
+                    "target": {
+                        "metric_type": "account",
+                        "store": "usaid_clinicfinder_prd",
+                        "name": "sum.service_provider.mtn",
+                        "aggregator": "last"
+                        }
+                },{
+                    "name": "Other",
+                    "target": {
+                        "metric_type": "account",
+                        "store": "usaid_clinicfinder_prd",
+                        "name": "sum.service_provider.other",
+                        "aggregator": "last"
+                        }
+                }
+            ]
+        },
+
+
+        "new_row",
+
+        {
+            "type": "diamondash.widgets.lvalue.LValueWidget",
+            "time_range": "30d",
+            "name": "LBS Consent Given",
+            "target": {
+                "metric_type": "account",
+                "store": "usaid_clinicfinder_prd",
+                "name": "sum.locate_type.lbs",
+                "aggregator": "last"
+                }
+        },
+
+        {
+            "type": "diamondash.widgets.lvalue.LValueWidget",
+            "time_range": "30d",
+            "name": "Suburb Given",
+            "target": {
+                "metric_type": "account",
+                "store": "usaid_clinicfinder_prd",
+                "name": "sum.locate_type.suburb",
+                "aggregator": "last"
+                }
+        },
+
+        {
+            "type": "diamondash.widgets.graph.GraphWidget",
+            "name": "LBS Consent vs Suburb Given Lookups",
+            "time_range": "112d",
+            "bucket_size": "7d",
+            "width": 6,
+            "metrics": [
+                {
+                    "name": "LBS Consent",
+                    "target": {
+                        "metric_type": "account",
+                        "store": "usaid_clinicfinder_prd",
+                        "name": "sum.locate_type.lbs",
+                        "aggregator": "last"
+                        }
+                },{
+                    "name": "Suburb",
+                    "target": {
+                        "metric_type": "account",
+                        "store": "usaid_clinicfinder_prd",
+                        "name": "sum.locate_type.suburb",
+                        "aggregator": "last"
+                        }
+                }
+            ]
+        },
+
+        "new_row"
+    ]
+}
