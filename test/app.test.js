@@ -307,6 +307,33 @@ describe("app", function() {
                         });
                     });
 
+                    describe("if they choose 2. and give suburb", function() {
+                        it("should ask about health services opt-in", function() {
+                            return tester
+                            .setup.user.addr('082111')
+                            .inputs(
+                                {session_event: "new"},
+                                {content: '1', provider: 'MTN' }, // state_clinic_type
+                                {content: '2', provider: 'MTN' },  // state_locate_permission
+                                {content: '2', provider: 'MTN' },  // state_reprompt_permission
+                                {content: 'Friend Street', provider: 'MTN' }  // state_suburb
+                                )
+                            .check.interaction({
+                                state: 'state_health_services',
+                                reply: [
+                                    "You will get an SMS with the clinic " +
+                                    "info shortly. Want to hear about the " +
+                                    "latest health services & info? T&Cs " +
+                                    "www.zazi.org.za",
+                                    "1. For female",
+                                    "2. For males",
+                                    "3. No"
+                                ].join("\n")
+                            })
+                            .run();
+                        });
+                    });
+
                     describe("if they choose 3. Quit", function() {
                         it("should show info and quit", function() {
                             return tester
