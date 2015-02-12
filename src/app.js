@@ -348,15 +348,7 @@ go.app = function() {
                       "and make sure you use the correct spelling."),
                 next: 'state_locate_clinic',
                 next_text: 'More',
-                previous_text: 'Back',
-
-
-
-                // map_api_opts: {
-                //     address_details: ["road", "city", "town", "postcode", "country"],
-                //     store_fields: ["display_name", "lon", "lat"],
-
-                // }
+                previous_text: 'Back'
             });
         });
 
