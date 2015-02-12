@@ -1,4 +1,4 @@
 go-usaid-clinicfinder
 =====================
 
-USAID Clinic Finder Javascript for Vumi Go
+USAID Clinic Finder (publically known as Healthsites) Javascript for Vumi Go
