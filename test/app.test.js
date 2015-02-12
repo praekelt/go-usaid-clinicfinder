@@ -2,7 +2,8 @@ var vumigo = require('vumigo_v02');
 var AppTester = vumigo.AppTester;
 var _ = require('lodash');
 var fixtures = require('./fixtures');
-var LocationState = require('go-jsbox-location');
+var location = require('go-jsbox-location');
+var openstreetmap = location.providers.openstreetmap;
 var assert = require('assert');
 
 
@@ -10,82 +11,75 @@ describe("app", function() {
     describe("GoApp", function() {
         var app;
         var tester;
+        var locations;
 
         beforeEach(function() {
             app = new go.app.GoApp();
             tester = new AppTester(app);
-            locations = LocationState.testing();
+            locations = [];
 
-            locations.add_location({
-                request:"Friend Street",
-                response_data: {
-                    results: [
-                        {
-                            display_name:"Friend Street, Suburb",
-                            geometry: {
-                                location: {lng: '3.1415', lat: '2.7182'}
-                            }
+            locations.push({
+                query: "Quad Street",
+                bounding_box: ["16.4500", "-22.1278", "32.8917", "-34.8333"],
+                response_data: [
+                    {
+                        display_name:"Quad St 1, Sub 1",
+                        lat: '1.1',
+                        lon: '1.11',
+                        address: {
+                            road: "Quad St 1",
+                            city: "City 1",
+                            town: "Town 1",
+                            postcode: "0001",
+                            country: "RSA",
+                            country_code: "za"
                         }
-                    ],
-                    status:"OK"
-                }
+                    },{
+                        display_name:"Quad St 2, Sub 2",
+                        lat: '2.2',
+                        lon: '2.22',
+                        address: {
+                            road: "Quad St 2",
+                            town: "Town 2",
+                            postcode: "0002",
+                            country: "RSA",
+                            country_code: "za"
+                        }
+                    },{
+                        display_name:"Quad St 3, Sub 3",
+                        lat: '3.3',
+                        lon: '3.33',
+                        address: {
+                            road: "Quad St 3",
+                            city: "City 3",
+                            postcode: "0003",
+                            country: "RSA",
+                            country_code: "za"
+                        }
+                    },{
+                        display_name:"Quad St 4, Sub 4",
+                        lat: '4.4',
+                        lon: '4.44',
+                        address: {
+                            road: "Quad St 4",
+                            postcode: "0004",
+                            country: "RSA",
+                            country_code: "za"
+                        }
+                    }
+                ]
             });
 
-            locations.add_location({
-                request:"Quad Street",
-                response_data: {
-                    results: [
-                        {
-                            display_name:"Quad St 1, Sub 1",
-                            geometry: {
-                                location: { lng: '1.1', lat: '1.11' }
-                            },
-                            address: {
-                                road: "Quad St 1",
-                                city: "City 1",
-                                postcode: "0001",
-                                country: "RSA",
-                                country_code: "za"
-                            }
-                        },{
-                            display_name:"Quad St 2, Sub 2",
-                            geometry: {
-                                location: { lng: '2.2', lat: '2.22' }
-                            },
-                            address: {
-                                road: "Quad St 2",
-                                town: "Town 2",
-                                postcode: "0002",
-                                country: "RSA",
-                                country_code: "za"
-                            }
-                        },{
-                            display_name:"Quad St 3, Sub 3",
-                            geometry: {
-                                location: { lng: '3.3', lat: '3.33' }
-                            },
-                            address: {
-                                road: "Quad St 3",
-                                city: "City 3",
-                                postcode: "0003",
-                                country: "RSA",
-                                country_code: "za"
-                            }
-                        },{
-                            display_name:"Quad St 4, Sub 4",
-                            geometry: {
-                                location: { lng: '4.4', lat: '4.44' }
-                            },
-                            address: {
-                                road: "Quad St 4",
-                                postcode: "0004",
-                                country: "RSA",
-                                country_code: "za"
-                            }
-                        }
-                    ],
-                    status:"OK"
-                }
+            locations.push({
+                query: "Friend Street",
+                bounding_box: ["16.4500", "-22.1278", "32.8917", "-34.8333"],
+                response_data: [
+                    {
+                        display_name: "Friend Street, Suburb",
+                        lat: '3.1415',
+                        lon: '2.7182'
+                    }
+                ]
             });
 
             tester
@@ -112,8 +106,14 @@ describe("app", function() {
                 })
                 .setup(function(api) {
                     fixtures().forEach(api.http.fixtures.add);
-                    locations.fixtures.forEach(api.http.fixtures.add);
+                    locations.forEach(function(location) {
+                        api.http.fixtures.add(openstreetmap.fixture(location));
+                    });
                 });
+                // .setup(function(api) {
+                //     fixtures().forEach(api.http.fixtures.add);
+                //     locations.fixtures.forEach(api.http.fixtures.add);
+                // });
         });
 
         describe("when the user starts a session", function() {
@@ -490,7 +490,7 @@ describe("app", function() {
                                                         msisdn: '+082111'
                                                     });
                                     assert.equal(contact.extra[
-                                        'location:display_name'],
+                                        'location:formatted_address'],
                                         'Friend Street, Suburb');
                                     assert.equal(contact.extra[
                                         'location:lon'], '3.1415');
@@ -517,9 +517,8 @@ describe("app", function() {
                                         "1. Quad St 1, City 1, 0001, RSA",
                                         "2. Quad St 2, Town 2, 0002, RSA",
                                         "3. Quad St 3, City 3, 0003, RSA",
-                                        "n. Next",
-                                        "p. Previous",
-                                        "s. Exit"
+                                        "n. More",
+                                        "p. Back"
                                     ].join('\n')
                                 })
                                 .run();
@@ -540,56 +539,55 @@ describe("app", function() {
                                     reply: [
                                         "Please select your location:",
                                         "1. Quad St 4, 0004, RSA",
-                                        "r. Try again",
-                                        "p. Previous",
-                                        "s. Exit"
+                                        "n. More",
+                                        "p. Back"
                                     ].join('\n')
                                 })
                                 .run();
                         });
 
-                        it("should show info and quit if Exit chosen", function() {
-                            return tester
-                                .setup.user.addr('082111')
-                                .inputs(
-                                    {session_event: "new"},
-                                    { content: '2',
-                                      provider: 'CellC' },  // state_clinic_type
-                                    'Quad Street',  // state_suburb
-                                    's'  // state_suburb
-                                )
-                                .check.interaction({
-                                    state: 'state_quit',
-                                    reply:
-                                        "Thanks for using Clinic Finder. For info on " +
-                                        "MMC visit brothersforlife.org. For info on " +
-                                        "HCT visit zazi.org.za. Find a clinic on the " +
-                                        "web visit healthsites.org.za"
-                                })
-                                .check.reply.ends_session()
-                                .run();
-                        });
+                        // it("should show info and quit if Exit chosen", function() {
+                        //     return tester
+                        //         .setup.user.addr('082111')
+                        //         .inputs(
+                        //             {session_event: "new"},
+                        //             { content: '2',
+                        //               provider: 'CellC' },  // state_clinic_type
+                        //             'Quad Street',  // state_suburb
+                        //             's'  // state_suburb
+                        //         )
+                        //         .check.interaction({
+                        //             state: 'state_quit',
+                        //             reply:
+                        //                 "Thanks for using Clinic Finder. For info on " +
+                        //                 "MMC visit brothersforlife.org. For info on " +
+                        //                 "HCT visit zazi.org.za. Find a clinic on the " +
+                        //                 "web visit healthsites.org.za"
+                        //         })
+                        //         .check.reply.ends_session()
+                        //         .run();
+                        // });
 
-                        it("should ask suburb again if 'r' is chosen", function() {
-                            return tester
-                                .setup.user.addr('082111')
-                                .inputs(
-                                    {session_event: "new"},
-                                    { content: '2',
-                                      provider: 'CellC' },  // state_clinic_type
-                                    'Quad Street',  // state_suburb
-                                    'n',  // state_suburb
-                                    'r'  // state_suburb
-                                )
-                                .check.interaction({
-                                    state: 'state_suburb',
-                                    reply:
-                                        "To find your closest clinic we need to know " +
-                                        "what suburb or area u are in. Please be " +
-                                        "specific. e.g. Inanda Sandton"
-                                })
-                                .run();
-                        });
+                        // it("should ask suburb again if 'r' is chosen", function() {
+                        //     return tester
+                        //         .setup.user.addr('082111')
+                        //         .inputs(
+                        //             {session_event: "new"},
+                        //             { content: '2',
+                        //               provider: 'CellC' },  // state_clinic_type
+                        //             'Quad Street',  // state_suburb
+                        //             'n',  // state_suburb
+                        //             'r'  // state_suburb
+                        //         )
+                        //         .check.interaction({
+                        //             state: 'state_suburb',
+                        //             reply:
+                        //                 "To find your closest clinic we need to know " +
+                        //                 "what suburb or area u are in. Please be " +
+                        //                 "specific. e.g. Inanda Sandton"
+                        //         })
+                        //         .run();
+                        // });
 
                         it("should save data to contact upon choice", function() {
                             return tester
@@ -606,7 +604,7 @@ describe("app", function() {
                                                         msisdn: '+082111'
                                                     });
                                     assert.equal(contact.extra[
-                                        'location:display_name'],
+                                        'location:formatted_address'],
                                         'Quad St 3, City 3, 0003, RSA');
                                     assert.equal(contact.extra[
                                         'location:lon'], '3.3');

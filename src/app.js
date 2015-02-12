@@ -1,6 +1,5 @@
 go.app = function() {
     var vumigo = require('vumigo_v02');
-    var LocationState = require('go-jsbox-location');
     var App = vumigo.App;
     var Choice = vumigo.states.Choice;
     var ChoiceState = vumigo.states.ChoiceState;
@@ -8,6 +7,10 @@ go.app = function() {
     var Q = require('q');
     var EndState = vumigo.states.EndState;
     var JsonApi = vumigo.http.api.JsonApi;
+
+    var location = require('go-jsbox-location');
+    var LocationState = location.LocationState;
+    var OpenStreetMap = location.providers.openstreetmap.OpenStreetMap;
 
 
     var GoApp = App.extend(function(self) {
@@ -57,8 +60,8 @@ go.app = function() {
                 point: {
                     type: "Point",
                     coordinates: [
-                        parseFloat(contact.extra['location:geometry:location:lng']),
-                        parseFloat(contact.extra['location:geometry:location:lat'])
+                        parseFloat(contact.extra['location:lon']),
+                        parseFloat(contact.extra['location:lat'])
                     ]
                 }
             };
@@ -282,27 +285,78 @@ go.app = function() {
 
         self.states.add('state_suburb', function(name) {
             return new LocationState(name, {
-                mapping_service: 'osmaps',
+                map_provider: new OpenStreetMap({
+                    bounding_box: ["16.4500", "-22.1278", "32.8917", "-34.8333"],
+                    extract_address_data: function(result) {
+                        var formatted_address;
+                        if (!result.address) {
+                            formatted_address = result.display_name;
+                        } else {
+                            var city_town_village = result.address.city ||
+                                result.address.town || result.address.village;
+                            result.address.city_town_village = city_town_village;
+
+                            var addr_details = ['road', 'city_town_village',
+                                'postcode', 'country'];
+                            var addr_from_details = [];
+
+                            addr_details.forEach(function(detail) {
+                                if (result.address[detail] !== undefined) {
+                                    addr_from_details.push(result.address[detail]);
+                                }
+                            });
+
+                            formatted_address = addr_from_details.join(', ');
+                        }
+                        return {
+                            formatted_address: formatted_address,
+                            lon: result.lat,
+                            lat: result.lon
+                        };
+                    },
+                    extract_address_label: function(result) {
+                        if (!result.address) {
+                            return result.display_name;
+                        } else {
+                            var city_town_village = result.address.city ||
+                                result.address.town || result.address.village;
+                            result.address.city_town_village = city_town_village;
+
+                            var addr_details = ['road', 'city_town_village',
+                                'postcode', 'country'];
+                            var addr_from_details = [];
+
+                            addr_details.forEach(function(detail) {
+                                if (result.address[detail] !== undefined) {
+                                    addr_from_details.push(result.address[detail]);
+                                }
+                            });
+
+                            return addr_from_details.join(', ');
+                        }
+                    }
+                }),
                 question:
                     $("To find your closest clinic we need to know " +
                       "what suburb or area u are in. Please be " +
                       "specific. e.g. Inanda Sandton"),
+                refine_question:
+                    $("Please select your location:"),
                 error_question:
                     $("Sorry there are no results for your location. " +
                       "Please re-enter your location again carefully " +
                       "and make sure you use the correct spelling."),
-                refine_question:
-                    $("Please select your location:"),
                 next: 'state_locate_clinic',
-                skip: 'state_quit',
-                skip_text: 'Exit',
-                retry_text: 'Try again',
-                map_api_opts: {
-                    store_fields: ["display_name", "lon", "lat"],
-                    address_details: ["road", "city", "town", "postcode",
-                                      "country"],
-                    bounding_box: ["16.4500", "-22.1278", "32.8917", "-34.8333"]
-                }
+                next_text: 'More',
+                previous_text: 'Back',
+
+
+
+                // map_api_opts: {
+                //     address_details: ["road", "city", "town", "postcode", "country"],
+                //     store_fields: ["display_name", "lon", "lat"],
+
+                // }
             });
         });
 
