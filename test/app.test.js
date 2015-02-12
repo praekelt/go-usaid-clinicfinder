@@ -21,6 +21,7 @@ describe("app", function() {
             locations.push({
                 query: "Quad Street",
                 bounding_box: ["16.4500", "-22.1278", "32.8917", "-34.8333"],
+                address_limit: 4,
                 response_data: [
                     {
                         display_name:"Quad St 1, Sub 1",
@@ -77,6 +78,7 @@ describe("app", function() {
             locations.push({
                 query: "Friend Street",
                 bounding_box: ["16.4500", "-22.1278", "32.8917", "-34.8333"],
+                address_limit: 4,
                 response_data: [
                     {
                         display_name: "Friend Street, Suburb",

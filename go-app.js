@@ -294,6 +294,7 @@ go.app = function() {
             return new LocationState(name, {
                 map_provider: new OpenStreetMap({
                     bounding_box: ["16.4500", "-22.1278", "32.8917", "-34.8333"],
+                    address_limit: 4,
                     extract_address_data: function(result) {
                         var formatted_address;
                         if (!result.address) {
