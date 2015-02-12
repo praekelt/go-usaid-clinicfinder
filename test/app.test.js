@@ -25,8 +25,8 @@ describe("app", function() {
                 response_data: [
                     {
                         display_name:"Quad St 1, Sub 1",
-                        lat: '1.1',
-                        lon: '1.11',
+                        lon: '1.1',
+                        lat: '1.11',
                         address: {
                             road: "Quad St 1",
                             suburb: "Suburb number 1",
@@ -38,8 +38,8 @@ describe("app", function() {
                         }
                     },{
                         display_name:"Quad St 2, Sub 2",
-                        lat: '2.2',
-                        lon: '2.22',
+                        lon: '2.2',
+                        lat: '2.22',
                         address: {
                             road: "Quad St 2",
                             suburb: "Suburb number 2",
@@ -50,8 +50,8 @@ describe("app", function() {
                         }
                     },{
                         display_name:"Quad St 3, Sub 3",
-                        lat: '3.3',
-                        lon: '3.33',
+                        lon: '3.3',
+                        lat: '3.33',
                         address: {
                             road: "Quad St 3",
                             suburb: "Suburb number 3",
@@ -62,8 +62,8 @@ describe("app", function() {
                         }
                     },{
                         display_name:"Quad St 4, Sub 4",
-                        lat: '4.4',
-                        lon: '4.44',
+                        lon: '4.4',
+                        lat: '4.44',
                         address: {
                             road: "Quad St 4",
                             suburb: "Suburb number 4",
@@ -82,8 +82,8 @@ describe("app", function() {
                 response_data: [
                     {
                         display_name: "Friend Street, Suburb",
-                        lat: '3.1415',
-                        lon: '2.7182'
+                        lon: '3.1415',
+                        lat: '2.7182'
                     }
                 ]
             });

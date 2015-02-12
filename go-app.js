@@ -317,8 +317,8 @@ go.app = function() {
                         }
                         return {
                             formatted_address: formatted_address,
-                            lon: result.lat,
-                            lat: result.lon
+                            lat: result.lat,
+                            lon: result.lon
                         };
                     },
                     extract_address_label: function(result) {
