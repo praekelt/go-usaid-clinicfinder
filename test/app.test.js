@@ -110,10 +110,6 @@ describe("app", function() {
                         api.http.fixtures.add(openstreetmap.fixture(location));
                     });
                 });
-                // .setup(function(api) {
-                //     fixtures().forEach(api.http.fixtures.add);
-                //     locations.fixtures.forEach(api.http.fixtures.add);
-                // });
         });
 
         describe("when the user starts a session", function() {
@@ -545,49 +541,6 @@ describe("app", function() {
                                 })
                                 .run();
                         });
-
-                        // it("should show info and quit if Exit chosen", function() {
-                        //     return tester
-                        //         .setup.user.addr('082111')
-                        //         .inputs(
-                        //             {session_event: "new"},
-                        //             { content: '2',
-                        //               provider: 'CellC' },  // state_clinic_type
-                        //             'Quad Street',  // state_suburb
-                        //             's'  // state_suburb
-                        //         )
-                        //         .check.interaction({
-                        //             state: 'state_quit',
-                        //             reply:
-                        //                 "Thanks for using Clinic Finder. For info on " +
-                        //                 "MMC visit brothersforlife.org. For info on " +
-                        //                 "HCT visit zazi.org.za. Find a clinic on the " +
-                        //                 "web visit healthsites.org.za"
-                        //         })
-                        //         .check.reply.ends_session()
-                        //         .run();
-                        // });
-
-                        // it("should ask suburb again if 'r' is chosen", function() {
-                        //     return tester
-                        //         .setup.user.addr('082111')
-                        //         .inputs(
-                        //             {session_event: "new"},
-                        //             { content: '2',
-                        //               provider: 'CellC' },  // state_clinic_type
-                        //             'Quad Street',  // state_suburb
-                        //             'n',  // state_suburb
-                        //             'r'  // state_suburb
-                        //         )
-                        //         .check.interaction({
-                        //             state: 'state_suburb',
-                        //             reply:
-                        //                 "To find your closest clinic we need to know " +
-                        //                 "what suburb or area u are in. Please be " +
-                        //                 "specific. e.g. Inanda Sandton"
-                        //         })
-                        //         .run();
-                        // });
 
                         it("should save data to contact upon choice", function() {
                             return tester
