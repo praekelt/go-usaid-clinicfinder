@@ -28,7 +28,8 @@ describe("app", function() {
                         lon: '1.11',
                         address: {
                             road: "Quad St 1",
-                            city: "City 1",
+                            suburb: "Suburb number 1",
+                            city: "City number 1",
                             town: "Town 1",
                             postcode: "0001",
                             country: "RSA",
@@ -40,7 +41,8 @@ describe("app", function() {
                         lon: '2.22',
                         address: {
                             road: "Quad St 2",
-                            town: "Town 2",
+                            suburb: "Suburb number 2",
+                            town: "Town number 2",
                             postcode: "0002",
                             country: "RSA",
                             country_code: "za"
@@ -51,7 +53,8 @@ describe("app", function() {
                         lon: '3.33',
                         address: {
                             road: "Quad St 3",
-                            city: "City 3",
+                            suburb: "Suburb number 3",
+                            city: "City number 3",
                             postcode: "0003",
                             country: "RSA",
                             country_code: "za"
@@ -62,6 +65,7 @@ describe("app", function() {
                         lon: '4.44',
                         address: {
                             road: "Quad St 4",
+                            suburb: "Suburb number 4",
                             postcode: "0004",
                             country: "RSA",
                             country_code: "za"
@@ -510,9 +514,9 @@ describe("app", function() {
                                     state: 'state_suburb',
                                     reply: [
                                         "Please select your location:",
-                                        "1. Quad St 1, City 1, 0001, RSA",
-                                        "2. Quad St 2, Town 2, 0002, RSA",
-                                        "3. Quad St 3, City 3, 0003, RSA",
+                                        "1. Suburb number 1, City number 1",
+                                        "2. Suburb number 2, Town number 2",
+                                        "3. Suburb number 3, City number 3",
                                         "n. More",
                                         "p. Back"
                                     ].join('\n')
@@ -534,7 +538,7 @@ describe("app", function() {
                                     state: 'state_suburb',
                                     reply: [
                                         "Please select your location:",
-                                        "1. Quad St 4, 0004, RSA",
+                                        "1. Suburb number 4",
                                         "n. More",
                                         "p. Back"
                                     ].join('\n')
@@ -558,7 +562,7 @@ describe("app", function() {
                                                     });
                                     assert.equal(contact.extra[
                                         'location:formatted_address'],
-                                        'Quad St 3, City 3, 0003, RSA');
+                                        'Suburb number 3, City number 3');
                                     assert.equal(contact.extra[
                                         'location:lon'], '3.3');
                                     assert.equal(contact.extra[

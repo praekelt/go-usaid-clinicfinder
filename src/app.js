@@ -296,8 +296,7 @@ go.app = function() {
                                 result.address.town || result.address.village;
                             result.address.city_town_village = city_town_village;
 
-                            var addr_details = ['road', 'city_town_village',
-                                'postcode', 'country'];
+                            var addr_details = ['suburb', 'city_town_village'];
                             var addr_from_details = [];
 
                             addr_details.forEach(function(detail) {
@@ -322,8 +321,7 @@ go.app = function() {
                                 result.address.town || result.address.village;
                             result.address.city_town_village = city_town_village;
 
-                            var addr_details = ['road', 'city_town_village',
-                                'postcode', 'country'];
+                            var addr_details = ['suburb', 'city_town_village'];
                             var addr_from_details = [];
 
                             addr_details.forEach(function(detail) {
