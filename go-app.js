@@ -199,7 +199,6 @@ go.app = function() {
                       "are you looking for?"),
 
                 choices: [
-                    new Choice('nearest', $("Nearest Clinic")),
                     new Choice('mmc', $("MMC Clinic")),
                     new Choice('hct', $("HCT Clinic"))
                 ],
@@ -263,12 +262,12 @@ go.app = function() {
             return new ChoiceState(name, {
                 question:
                     $("If you do not give consent we can't locate you " +
-                      "automatically. Alternatively, give us your " +
-                      "suburb:"),
+                      "automatically. Alternatively, tell us where you live, " +
+                      "(area or suburb)"),
 
                 choices: [
                     new Choice('consent', $("Give consent")),
-                    new Choice('suburb', $("Give suburb")),
+                    new Choice('suburb', $("Enter location")),
                     new Choice('quit', $("Quit"))
                 ],
 
@@ -344,8 +343,8 @@ go.app = function() {
                 }),
                 question:
                     $("To find your closest clinic we need to know " +
-                      "what suburb or area u are in. Please be " +
-                      "specific. e.g. Inanda Sandton"),
+                      "where you live, the suburb or area u are in. " +
+                      "Please be specific. e.g. Inanda Sandton"),
                 refine_question:
                     $("Please select your location:"),
                 error_question:

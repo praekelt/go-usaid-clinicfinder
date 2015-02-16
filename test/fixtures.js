@@ -95,9 +95,8 @@ module.exports = function() {
             "url": "http://127.0.0.1:8000/clinicfinder/requestlookup/",
             "data": {
                 "search": {
-                    "mmc": "true",
                     "hct": "true"
-                },
+               },
                 "response": {
                     "type": "SMS",
                     "to_addr": "+082111",
@@ -119,7 +118,7 @@ module.exports = function() {
                "id": 2,
                "url": "http://127.0.0.1:8000/clinicfinder/requestlookup/2/",
                "search": {
-                  "mmc": "true"
+                  "hct": "true"
                },
                "response": {
                   "type": "SMS",
@@ -145,8 +144,7 @@ module.exports = function() {
             "url": "http://127.0.0.1:8000/clinicfinder/requestlookup/",
             "data": {
                "search": {
-                  "mmc": "true",
-                  "hct": "true"
+                  "mmc": "true"
                },
                "response": {
                   "template_type": "SMS",
@@ -166,8 +164,7 @@ module.exports = function() {
                "id": 2,
                "url": "http://127.0.0.1:8000/clinicfinder/requestlookup/2/",
                "search": {
-                  "mmc": "true",
-                  "hct": "true"
+                  "mmc": "true"
                },
                "response": {
                   "template_type": "SMS",
@@ -196,8 +193,7 @@ module.exports = function() {
                },
                "pointofinterest": {
                   "search": {
-                     "mmc": "true",
-                     "hct": "true"
+                     "mmc": "true"
                   },
                   "response": {
                      "type": "SMS",
@@ -218,8 +214,7 @@ module.exports = function() {
                "pointofinterest": {
                   "id": 3,
                   "search": {
-                     "mmc": "true",
-                     "hct": "true"
+                     "mmc": "true"
                   },
                   "response": {
                      "type": "SMS",
