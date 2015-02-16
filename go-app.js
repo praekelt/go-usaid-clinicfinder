@@ -199,7 +199,6 @@ go.app = function() {
                       "are you looking for?"),
 
                 choices: [
-                    new Choice('nearest', $("Nearest Clinic")),
                     new Choice('mmc', $("MMC Clinic")),
                     new Choice('hct', $("HCT Clinic"))
                 ],

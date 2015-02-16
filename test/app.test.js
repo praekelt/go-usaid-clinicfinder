@@ -145,9 +145,8 @@ describe("app", function() {
                             reply: [
                                 "Welcome to Healthsites. What type of " +
                                 "clinic are you looking for?",
-                                "1. Nearest Clinic",
-                                "2. MMC Clinic",
-                                "3. HCT Clinic"
+                                "1. MMC Clinic",
+                                "2. HCT Clinic"
                             ].join('\n')
                         })
                         .run();
@@ -195,9 +194,8 @@ describe("app", function() {
                             reply: [
                                 "Welcome to Healthsites. What type of " +
                                 "clinic are you looking for?",
-                                "1. Nearest Clinic",
-                                "2. MMC Clinic",
-                                "3. HCT Clinic"
+                                "1. MMC Clinic",
+                                "2. HCT Clinic"
                             ].join('\n')
                         })
                         .run();
@@ -240,7 +238,7 @@ describe("app", function() {
                     )
                     .check(function(api) {
                         var metrics = api.metrics.stores.usaid_clinicfinder_test;
-                        assert.deepEqual(metrics['sum.clinic_type_select.nearest'].values, [1]);
+                        assert.deepEqual(metrics['sum.clinic_type_select.mmc'].values, [1]);
                     })
                     .run();
             });
@@ -280,7 +278,7 @@ describe("app", function() {
                             )
                             .check(function(api) {
                                 var metrics = api.metrics.stores.usaid_clinicfinder_test;
-                                assert.deepEqual(metrics['sum.database_queries.nearest'].values, [1]);
+                                assert.deepEqual(metrics['sum.database_queries.mmc'].values, [1]);
                             })
                             .run();
                     });
@@ -581,7 +579,7 @@ describe("app", function() {
                                 .setup.user.addr('082111')
                                 .inputs(
                                     {session_event: "new"},
-                                    { content: '2',
+                                    { content: '1',
                                       provider: 'CellC' },  // state_clinic_type
                                     'Quad Street',  // state_suburb
                                     '3'  // state_suburb
@@ -718,12 +716,12 @@ describe("app", function() {
                         '1',  // state_locate_permission
                         '2',  // state_health_services
                         {session_event: "new"},
-                        { content: '2',
+                        { content: '1',
                           provider: 'CellC' },  // state_clinic_type
                         'Friend Street',  // state_suburb
                         '2',  // state_health_services
                         {session_event: "new"},
-                        { content: '2',
+                        { content: '1',
                           provider: 'CellC' },  // state_clinic_type
                         'Quad Street',  // state_suburb
                         '3'  // state_suburb
