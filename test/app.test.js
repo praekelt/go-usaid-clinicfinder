@@ -101,6 +101,7 @@ describe("app", function() {
                     template: "Your nearest clinics are: {{ results }}. " +
                               "Thanks for using Healthsites."
                 })
+                .setup.char_limit(160)
                 .setup(function(api) {
                     api.contacts.add({
                         msisdn: '+082111',
@@ -402,9 +403,9 @@ describe("app", function() {
                                     "You will get an SMS with the clinic " +
                                     "info shortly. Want to hear about the " +
                                     "latest health services & info? T&Cs " +
-                                    "www.zazi.org.za",
-                                    "1. For female",
-                                    "2. For males",
+                                    "www.brothersforlife.org",
+                                    "1. Female",
+                                    "2. Males",
                                     "3. No"
                                 ].join("\n")
                             })
