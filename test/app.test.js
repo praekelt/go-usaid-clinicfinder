@@ -321,11 +321,11 @@ describe("app", function() {
                             .check.interaction({
                                 state: 'state_reprompt_permission',
                                 reply: [
-                                    "If you do not give consent we can't locate you " +
-                                    "automatically. Alternatively, give us your " +
-                                    "suburb:",
+                                    "If you do not give consent we can't locate you automatically. " +
+                                    "Alternatively, tell us where you live, " +
+                                    "(area or suburb)",
                                     "1. Give consent",
-                                    "2. Give suburb",
+                                    "2. Enter location",
                                     "3. Quit"
                                 ].join('\n')
                             })
@@ -376,8 +376,8 @@ describe("app", function() {
                             .check.interaction({
                                 state: 'state_suburb',
                                 reply:
-                                    "To find your closest clinic we need to know " +
-                                    "what suburb or area u are in. Please be " +
+                                    "To find your closest clinic we need to know where you live, " +
+                                    "the suburb or area u are in. Please be " +
                                     "specific. e.g. Inanda Sandton"
                             })
                             .run();
@@ -450,8 +450,8 @@ describe("app", function() {
                         .check.interaction({
                             state: 'state_suburb',
                             reply:
-                                "To find your closest clinic we need to know " +
-                                "what suburb or area u are in. Please be " +
+                                "To find your closest clinic we need to know where you live, " +
+                                "the suburb or area u are in. Please be " +
                                 "specific. e.g. Inanda Sandton"
                         })
                         .run();
@@ -471,8 +471,8 @@ describe("app", function() {
                         .check.interaction({
                             state: 'state_suburb',
                             reply:
-                                "To find your closest clinic we need to know " +
-                                "what suburb or area u are in. Please be " +
+                                "To find your closest clinic we need to know where you live, " +
+                                "the suburb or area u are in. Please be " +
                                 "specific. e.g. Inanda Sandton"
                         })
                         .run();
