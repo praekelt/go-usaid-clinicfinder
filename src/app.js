@@ -388,13 +388,14 @@ go.app = function() {
         self.states.add('state_health_services', function(name) {
             return new ChoiceState(name, {
                 question:
-                    $("You will get an SMS with the clinic info shortly. " +
-                      "Want to hear about the latest health services & info? " +
-                      "T&Cs www.brothersforlife.org"),
+                    $("U will get an SMS with clinic info. " +
+                      "Want 2 get more health info? T&Cs " +
+                      "www.brothersforlife.mobi " +
+                      "or www.zazi.org.za"),
 
                 choices: [
-                    new Choice('female', $("Female")),
-                    new Choice('male', $("Males")),
+                    new Choice('male', $("Yes - I'm a Man")),
+                    new Choice('female', $("Yes - I'm a Woman")),
                     new Choice('deny', $("No"))
                 ],
 

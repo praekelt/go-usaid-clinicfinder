@@ -295,12 +295,12 @@ describe("app", function() {
                             .check.interaction({
                                 state: 'state_health_services',
                                 reply: [
-                                    "You will get an SMS with the clinic info " +
-                                    "shortly. Want to hear about the latest " +
-                                    "health services & info? T&Cs " +
-                                    "www.brothersforlife.org",
-                                    "1. Female",
-                                    "2. Males",
+                                    "U will get an SMS with clinic info. " +
+                                    "Want 2 get more health info? T&Cs " +
+                                    "www.brothersforlife.mobi " +
+                                    "or www.zazi.org.za",
+                                    "1. Yes - I'm a Man",
+                                    "2. Yes - I'm a Woman",
                                     "3. No"
                                 ].join("\n")
                             })
@@ -349,12 +349,12 @@ describe("app", function() {
                             .check.interaction({
                                 state: 'state_health_services',
                                 reply: [
-                                    "You will get an SMS with the clinic info " +
-                                    "shortly. Want to hear about the latest " +
-                                    "health services & info? T&Cs " +
-                                    "www.brothersforlife.org",
-                                    "1. Female",
-                                    "2. Males",
+                                    "U will get an SMS with clinic info. " +
+                                    "Want 2 get more health info? T&Cs " +
+                                    "www.brothersforlife.mobi " +
+                                    "or www.zazi.org.za",
+                                    "1. Yes - I'm a Man",
+                                    "2. Yes - I'm a Woman",
                                     "3. No"
                                 ].join("\n")
                             })
@@ -398,12 +398,12 @@ describe("app", function() {
                             .check.interaction({
                                 state: 'state_health_services',
                                 reply: [
-                                    "You will get an SMS with the clinic " +
-                                    "info shortly. Want to hear about the " +
-                                    "latest health services & info? T&Cs " +
-                                    "www.brothersforlife.org",
-                                    "1. Female",
-                                    "2. Males",
+                                    "U will get an SMS with clinic info. " +
+                                    "Want 2 get more health info? T&Cs " +
+                                    "www.brothersforlife.mobi " +
+                                    "or www.zazi.org.za",
+                                    "1. Yes - I'm a Man",
+                                    "2. Yes - I'm a Woman",
                                     "3. No"
                                 ].join("\n")
                             })
@@ -492,12 +492,12 @@ describe("app", function() {
                                 .check.interaction({
                                     state: 'state_health_services',
                                     reply: [
-                                        "You will get an SMS with the clinic info " +
-                                        "shortly. Want to hear about the latest " +
-                                        "health services & info? T&Cs " +
-                                        "www.brothersforlife.org",
-                                        "1. Female",
-                                        "2. Males",
+                                        "U will get an SMS with clinic info. " +
+                                        "Want 2 get more health info? T&Cs " +
+                                        "www.brothersforlife.mobi " +
+                                        "or www.zazi.org.za",
+                                        "1. Yes - I'm a Man",
+                                        "2. Yes - I'm a Woman",
                                         "3. No"
                                     ].join("\n")
                                 })
@@ -615,7 +615,7 @@ describe("app", function() {
                         { content: '2',
                           provider: 'CellC' },  // state_clinic_type
                         'Friend Street',  // state_suburb
-                        '2'  // state_health_services
+                        '1'  // state_health_services
                     )
                     .check.interaction({
                         state: 'state_thanks',
