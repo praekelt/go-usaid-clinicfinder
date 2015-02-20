@@ -64,13 +64,26 @@
 
         "new_row",
 
+         {
+            "type": "diamondash.widgets.lvalue.LValueWidget",
+            "time_range": "7d",
+            "name": "Total SMSs Sent with results",
+            "target": {
+                "metric_type": "account",
+                "store": "usaid_clinicfinder_prd",
+                "name": "sms.results",
+                "aggregator": "sum"
+            }
+        },
         {
             "type": "diamondash.widgets.lvalue.LValueWidget",
             "time_range": "7d",
-            "name": "Total SMSs Sent",
+            "name": "Total SMSs Sent with no results",
             "target": {
-                "metric_type": "conversation",
-                "name": "messages_sent"
+                "metric_type": "account",
+                "store": "usaid_clinicfinder_prd",
+                "name": "sms.noresults",
+                "aggregator": "sum"
             }
         },
 
@@ -82,10 +95,21 @@
             "width": 6,
             "metrics": [
                 {
-                    "name": "Total SMSs Sent",
+                    "name": "Total SMSs Sent with results",
                     "target": {
-                        "metric_type": "conversation",
-                        "name": "messages_sent"
+                        "metric_type": "account",
+                        "store": "usaid_clinicfinder_prd",
+                        "name": "sms.results",
+                        "aggregator": "sum"
+                    }
+                },
+                {
+                    "name": "Total SMSs Sent with no results",
+                    "target": {
+                        "metric_type": "account",
+                        "store": "usaid_clinicfinder_prd",
+                        "name": "sms.noresults",
+                        "aggregator": "sum"
                     }
                 }
             ]
