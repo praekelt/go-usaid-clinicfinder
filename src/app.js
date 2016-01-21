@@ -192,8 +192,8 @@ go.app = function() {
                       "are you looking for?"),
 
                 choices: [
-                    new Choice('mmc', $("MMC Clinic")),
-                    new Choice('hct', $("HCT Clinic"))
+                    new Choice('mmc', $("Circumcision")),
+                    new Choice('hct', $("HIV Support"))
                 ],
 
                 next: function(choice) {
