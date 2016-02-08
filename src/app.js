@@ -43,7 +43,11 @@ go.app = function() {
 
         self.make_clinic_search_params = function() {
             var clinic_type_requested = self.im.user.answers.state_clinic_type;
-            var search_data = {};
+            var clinic_data_source = (
+                self.im.config.clinic_data_source || "internal");
+            var search_data = {
+              source: clinic_data_source,
+            };
             search_data[clinic_type_requested] = "true";
             return search_data;
         };
