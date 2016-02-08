@@ -305,6 +305,44 @@ describe("app", function() {
                             })
                             .run();
                     });
+
+                    describe("if a custom clinic source is configured",
+                    function () {
+                        it("should specify the clinic source in the search request",
+                        function() {
+                            return tester
+                                .setup.user.addr('082111')
+                                .setup.config.app({clinic_data_source: "aat"})
+                                .inputs(
+                                    {session_event: "new"},
+                                    { content: '1',
+                                      provider: 'MTN' },  // state_clinic_type
+                                    '1'  // state_locate_permission
+                                )
+                                .check.interaction({
+                                    state: 'state_health_services',
+                                    reply: [
+                                        "U will get an SMS with clinic info. " +
+                                        "Want 2 get more health info? T&Cs " +
+                                        "www.brothersforlife.mobi " +
+                                        "or www.zazi.org.za",
+                                        "1. Yes - I'm a Man",
+                                        "2. Yes - I'm a Woman",
+                                        "3. No"
+                                    ].join("\n")
+                                })
+                                .check(function (api) {
+                                    var search_request = api.http.requests[0];
+                                    assert.deepEqual(
+                                        search_request.data
+                                            .pointofinterest.search, {
+                                                "source": "aat",
+                                                "mmc": "true",
+                                            });
+                                })
+                                .run();
+                        });
+                    });
                 });
 
                 describe("if the user chooses 2. No don't locate", function() {
@@ -526,6 +564,42 @@ describe("app", function() {
                                 })
                                 .run();
                         });
+
+                    describe("if a custom clinic source is configured",
+                    function () {
+                        it("should specify the clinic source in the search request",
+                        function() {
+                            return tester
+                                .setup.user.addr('082111')
+                                .setup.config.app({clinic_data_source: "aat"})
+                                .inputs(
+                                    {session_event: "new"},
+                                    { content: '2',
+                                      provider: 'CellC' },  // state_clinic_type
+                                    'Friend Street'  // state_suburb
+                                )
+                                .check.interaction({
+                                    state: 'state_health_services',
+                                    reply: [
+                                        "U will get an SMS with clinic info. " +
+                                        "Want 2 get more health info? T&Cs " +
+                                        "www.brothersforlife.mobi " +
+                                        "or www.zazi.org.za",
+                                        "1. Yes - I'm a Man",
+                                        "2. Yes - I'm a Woman",
+                                        "3. No"
+                                    ].join("\n")
+                                })
+                                .check(function (api) {
+                                    var search_request = api.http.requests[1];
+                                    assert.deepEqual(search_request.data.search, {
+                                        "source": "aat",
+                                        "hct": "true",
+                                    });
+                                })
+                                .run();
+                        });
+                    });
 
                     describe("if there are multiple location options", function() {
                         it("should display a list of address options", function() {
