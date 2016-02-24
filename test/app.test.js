@@ -20,6 +20,7 @@ describe("app", function() {
 
             locations.push({
                 query: "Quad Street",
+                key: "osm_api_key",
                 bounding_box: ["16.4500", "-22.1278", "32.8917", "-34.8333"],
                 address_limit: 4,
                 response_data: [
@@ -77,6 +78,7 @@ describe("app", function() {
 
             locations.push({
                 query: "Friend Street",
+                key: "osm_api_key",
                 bounding_box: ["16.4500", "-22.1278", "32.8917", "-34.8333"],
                 address_limit: 4,
                 response_data: [
