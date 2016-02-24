@@ -98,7 +98,10 @@ describe("app", function() {
                     api_key: 'replace_with_token',
                     metric_store: 'usaid_clinicfinder_test',
                     template: "Your nearest clinics are: {{ results }}. " +
-                              "Thanks for using Healthsites."
+                              "Thanks for using Healthsites.",
+                    osm: {
+                      api_key: "osm_api_key",
+                    },
                 })
                 .setup.char_limit(160)
                 .setup(function(api) {
