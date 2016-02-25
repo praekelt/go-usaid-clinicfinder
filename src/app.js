@@ -282,6 +282,7 @@ go.app = function() {
         self.states.add('state_suburb', function(name) {
             return new LocationState(name, {
                 map_provider: new OpenStreetMap({
+                    api_key: self.im.config.osm.api_key,
                     bounding_box: ["16.4500", "-22.1278", "32.8917", "-34.8333"],
                     address_limit: 4,
                     extract_address_data: function(result) {
