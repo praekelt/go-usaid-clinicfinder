@@ -147,8 +147,8 @@ describe("app", function() {
                         .check.interaction({
                             state: 'state_clinic_type',
                             reply: [
-                                "Welcome to Healthsites. What type of " +
-                                "clinic are you looking for?",
+                                "Welcome back to Healthsites. What type of " +
+                                "service are you looking for?",
                                 "1. Circumcision",
                                 "2. HIV Support"
                             ].join('\n')
@@ -196,8 +196,8 @@ describe("app", function() {
                         .check.interaction({
                             state: 'state_clinic_type',
                             reply: [
-                                "Welcome to Healthsites. What type of " +
-                                "clinic are you looking for?",
+                                "Welcome back to Healthsites. What type of " +
+                                "service are you looking for?",
                                 "1. Circumcision",
                                 "2. HIV Support"
                             ].join('\n')
@@ -469,7 +469,7 @@ describe("app", function() {
                                 reply:
                                     "Thanks for using Healthsites. For info on " +
                                     "MMC visit brothersforlife.org. For info on " +
-                                    "HCT visit zazi.org.za. Find a clinic on the " +
+                                    "HCT visit zazi.org.za. Find a service on the " +
                                     "web visit healthsites.org.za"
                             })
                             .check.reply.ends_session()
@@ -701,7 +701,7 @@ describe("app", function() {
                             "Thanks for using the Healthsites " +
                             "Service. Opt out at any stage by " +
                             "SMSing 'STOP' in reply to your " +
-                            "clinic info message."
+                            "service info message."
                     })
                     .check(function(api) {
                         var contact = _.find(api.contacts.store, {
