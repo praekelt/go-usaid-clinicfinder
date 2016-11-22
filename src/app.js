@@ -185,7 +185,7 @@ go.app = function() {
         self.states.add('state_clinic_type', function(name) {
             return new ChoiceState(name, {
                 question:
-                    $("Welcome to Healthsites. What type of service " +
+                    $("Welcome back to Healthsites. What type of service " +
                       "are you looking for?"),
 
                 choices: [
@@ -415,7 +415,7 @@ go.app = function() {
                     $("Thanks for using the Healthsites " +
                       "Service. Opt out at any stage by " +
                       "SMSing 'STOP' in reply to your " +
-                      "clinic info message."),
+                      "service info message."),
 
                 next: 'state_start'
             });
